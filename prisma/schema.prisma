@@ -22,260 +22,48 @@ enum GermanLevel {
   C2
 }
 
-enum TestingType {
-  SPEAKING
-  WRITING
-  HEARING
-  GRAMMAR
-  READING
-}
-
 model User {
-  id              String        @id @default(cuid())
-  email           String        @unique
-  providerUserId  String?       @unique
+  id              String      @id @default(cuid())
+  email           String      @unique
+  providerUserId  String?     @unique
   name            String
   phoneNumber     String?
-  level           GermanLevel   @default(A1)
+  level           GermanLevel @default(A1)
   profileImageUrl String?
   password        String?
-  role            Role          @default(AGENT)
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-  payments        Payment[]
-  learning        Learning[]
-  examinations    Examination[]
+  role            Role        @default(AGENT)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 }
 
 model Level {
-  id              String           @id @default(cuid())
-  name            GermanLevel      @unique
-  imageUrl        String
-  description     String
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  topics          Topic[]
-  testing         Testing[]
-  speaking        Speaking[]
-  speakingSamples SpeakingSample[]
-  hearing         Hearing[]
-  hearingSamples  HearingSample[]
-  writing         Writing[]
-  writingSamples  WritingSample[]
-  grammar         Grammar[]
-  reading         Reading[]
-  learning        Learning[]
-  examinations    Examination[]
+  id          String      @id @default(cuid())
+  name        GermanLevel @unique
+  imageUrl    String
+  description String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  topics      Topic[]
 }
 
 model Topic {
-  id          String     @id @default(cuid())
+  id          String   @id @default(cuid())
   name        String
   description String
   imageUrl    String
   levelId     String
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  level       Level      @relation(fields: [levelId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  level       Level    @relation(fields: [levelId], references: [id])
   notes       Note[]
-  learning    Learning[]
 }
 
 model Note {
-  id        String         @id @default(cuid())
+  id        String   @id @default(cuid())
   markdown  String
   number    Int
   topicId   String
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
-  topic     Topic          @relation(fields: [topicId], references: [id])
-  questions NoteQuestion[]
-}
-
-model NoteQuestion {
-  id        String               @id @default(cuid())
-  markdown  String
-  number    Int
-  notesId   String
-  createdAt DateTime             @default(now())
-  updatedAt DateTime             @updatedAt
-  notes     Note                 @relation(fields: [notesId], references: [id])
-  answers   NoteQuestionAnswer[]
-  options   NoteQuestionOption[]
-}
-
-model NoteQuestionAnswer {
-  id         String       @id @default(cuid())
-  text       String
-  questionId String
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-  question   NoteQuestion @relation(fields: [questionId], references: [id])
-}
-
-model NoteQuestionOption {
-  id         String       @id @default(cuid())
-  text       String
-  questionId String
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-  question   NoteQuestion @relation(fields: [questionId], references: [id])
-}
-
-model Testing {
-  id          String      @id @default(cuid())
-  type        TestingType
-  name        String
-  description String
-  imageUrl    String
-  levelId     String
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  level       Level       @relation(fields: [levelId], references: [id])
-}
-
-model Speaking {
-  id           String   @id @default(cuid())
-  instructions String
-  markdown     String
-  levelId      String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  level        Level    @relation(fields: [levelId], references: [id])
-}
-
-model SpeakingSample {
-  id        String   @id @default(cuid())
-  markdown  String
-  audioUrl  String
-  levelId   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  level     Level    @relation(fields: [levelId], references: [id])
-}
-
-model Hearing {
-  id           String            @id @default(cuid())
-  instructions String
-  markdown     String
-  levelId      String
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
-  level        Level             @relation(fields: [levelId], references: [id])
-  questions    HearingQuestion[]
-}
-
-model HearingQuestion {
-  id        String          @id @default(cuid())
-  markdown  String
-  number    Int
-  hearingId String
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
-  hearing   Hearing         @relation(fields: [hearingId], references: [id])
-  answers   HearingAnswer[]
-}
-
-model HearingAnswer {
-  id         String          @id @default(cuid())
-  text       String
-  questionId String
-  createdAt  DateTime        @default(now())
-  updatedAt  DateTime        @updatedAt
-  question   HearingQuestion @relation(fields: [questionId], references: [id])
-}
-
-model HearingSample {
-  id        String   @id @default(cuid())
-  markdown  String
-  audioUrl  String
-  levelId   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  level     Level    @relation(fields: [levelId], references: [id])
-}
-
-model Writing {
-  id           String   @id @default(cuid())
-  instructions String
-  markdown     String
-  levelId      String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  level        Level    @relation(fields: [levelId], references: [id])
-}
-
-model WritingSample {
-  id        String   @id @default(cuid())
-  markdown  String
-  levelId   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  level     Level    @relation(fields: [levelId], references: [id])
-}
-
-model Grammar {
-  id           String          @id @default(cuid())
-  instructions String
-  markdown     String
-  levelId      String
-  createdAt    DateTime        @default(now())
-  updatedAt    DateTime        @updatedAt
-  level        Level           @relation(fields: [levelId], references: [id])
-  answers      GrammarAnswer[]
-}
-
-model GrammarAnswer {
-  id        String   @id @default(cuid())
-  text      String
-  grammarId String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  grammar   Grammar  @relation(fields: [grammarId], references: [id])
-}
-
-model Reading {
-  id           String   @id @default(cuid())
-  instructions String
-  markdown     String
-  audioUrl     String
-  levelId      String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  level        Level    @relation(fields: [levelId], references: [id])
-}
-
-model Payment {
-  id            String   @id @default(cuid())
-  userId        String
-  amount        Float
-  status        String
-  paymentMethod String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  user          User     @relation(fields: [userId], references: [id])
-}
-
-model Learning {
-  id        String   @id @default(cuid())
-  userId    String
-  levelId   String
-  topicId   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id])
-  level     Level    @relation(fields: [levelId], references: [id])
   topic     Topic    @relation(fields: [topicId], references: [id])
-}
-
-model Examination {
-  id          String      @id @default(cuid())
-  userId      String
-  levelId     String
-  testingType TestingType
-  testingId   String
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  user        User        @relation(fields: [userId], references: [id])
-  level       Level       @relation(fields: [levelId], references: [id])
 }
