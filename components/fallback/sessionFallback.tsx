@@ -4,7 +4,7 @@ export default function SessionFallback() {
     return (
         <div className="flex justify-center items-center w-full h-[80vh]">
             <Image
-                src="/logo.jpg"
+                src="/logo.svg"
                 alt="404"
                 width={200}
                 height={200}

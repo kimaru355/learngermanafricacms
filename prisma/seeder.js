@@ -1,13 +1,11 @@
 import { faker } from "@faker-js/faker";
 import { PrismaClient } from "@prisma/client";
-import axios from "axios";
 import bcrypt from "bcrypt";
 
-const api = "http://localhost:3000";
+const prisma = new PrismaClient();
 
 const createOwner = async () => {
     try {
-        const prisma = new PrismaClient();
         const user = await prisma.user.create({
             data: {
                 email: process.env.OWNER_EMAIL,
@@ -56,21 +54,19 @@ const createLevels = async () => {
             description: faker.word.words(20),
         },
     ];
-    await Promise.all(
-        levels.map((level) =>
-            axios
-                .post(api + "/api/levels", level)
-                .catch((error) =>
-                    console.log("Error on level creation: ", error)
-                )
-        )
-    );
-    console.log("Levels created");
+    try {
+        await prisma.level.createMany({
+            data: levels,
+        });
+        console.log("Levels created");
+    } catch (error) {
+        console.log("Error on levels creation: ", error);
+    }
 };
 
 const createTopics = async () => {
     try {
-        const levels = (await axios.get(api + "/api/levels")).data.data;
+        const levels = await prisma.level.findMany();
         let topics = [];
         levels.map((level) => {
             for (let i = 0; i < 5; i++) {
@@ -82,24 +78,18 @@ const createTopics = async () => {
                 });
             }
         });
-        await Promise.all(
-            topics.map((topic) =>
-                axios
-                    .post(api + "/api/topics", topic)
-                    .catch((error) =>
-                        console.log("Error on topic creation: ", error)
-                    )
-            )
-        );
+        await prisma.topic.createMany({
+            data: topics,
+        });
+        console.log("Topics created");
     } catch (error) {
         console.log("Error on topics creation: ", error);
     }
-    console.log("Topics created");
 };
 
 const createNotes = async () => {
     try {
-        const topics = (await axios.get(api + "/api/topics")).data.data;
+        const topics = await prisma.topic.findMany();
         let notes = [];
         topics.map((topic) => {
             for (let i = 0; i < 5; i++) {
@@ -110,20 +100,13 @@ const createNotes = async () => {
                 });
             }
         });
-        await Promise.all(
-            notes.map((note) =>
-                axios
-                    .post(api + "/api/notes", note)
-                    .catch((error) =>
-                        console.log("Error on note creation: ", error)
-                    )
-            )
-        );
+        await prisma.note.createMany({
+            data: notes,
+        });
+        console.log("Notes created");
     } catch (error) {
         console.log("Error on notes creation: ", error);
     }
-
-    console.log("Notes created");
 };
 
 const runAll = async () => {
