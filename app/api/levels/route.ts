@@ -19,7 +19,7 @@ export async function GET(): Promise<
         return NextResponse.json(response);
     } catch (error: unknown) {
         if (error instanceof PrismaClientKnownRequestError) {
-            return handlePrismaError(error);
+            return handlePrismaError<Level[]>(error);
         } else {
             return NextResponse.json({
                 success: false,
@@ -54,7 +54,7 @@ export async function POST(
         return NextResponse.json(response);
     } catch (error: unknown) {
         if (error instanceof PrismaClientKnownRequestError) {
-            return handlePrismaError(error);
+            return handlePrismaError<null>(error);
         } else {
             return NextResponse.json({
                 success: false,

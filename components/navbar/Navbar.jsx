@@ -6,6 +6,16 @@ import { signOut } from "next-auth/react";
 import { Button } from "../ui/button";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
+import {
+    NavigationMenu,
+    NavigationMenuContent,
+    NavigationMenuIndicator,
+    NavigationMenuItem,
+    NavigationMenuLink,
+    NavigationMenuList,
+    NavigationMenuTrigger,
+    NavigationMenuViewport,
+} from "@/components/ui/navigation-menu";
 
 export default function Navbar() {
     const { data: session, status } = useSession();
@@ -21,10 +31,7 @@ export default function Navbar() {
     }, [status, path]);
 
     return (
-        <nav
-            className="relative flex justify-between items-center bg-white shadow-sm px-4 lg:px-8 h-16 font-mono text-black"
-            role="navigation"
-        >
+        <nav className="flex justify-between items-center bg-deep-blue-gradient px-4 lg:px-8 w-full">
             <div>
                 <Link href={"/"}>Learn German Africa</Link>
             </div>
@@ -38,7 +45,9 @@ export default function Navbar() {
                     </Link>
                 )}
                 {status === "authenticated" && (
-                    <Button onClick={signOut}>Logout</Button>
+                    <div>
+                        <Button onClick={signOut}>Logout</Button>
+                    </div>
                 )}
             </div>
         </nav>

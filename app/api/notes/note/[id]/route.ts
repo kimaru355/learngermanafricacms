@@ -48,13 +48,13 @@ export async function PUT(
     try {
         const { id } = await params;
         const body = await req.json();
-        const { markdown, topicId } = body;
+        const { content, topicId } = body;
 
-        if (!markdown || !topicId) {
+        if (!content || !topicId) {
             const response: ResponseType<null> = {
                 success: false,
                 message:
-                    "Please provide all required fields: markdown, topicId.",
+                    "Please provide all required fields: content, topicId.",
                 data: null,
             };
             return NextResponse.json(response, { status: 200 });
@@ -63,7 +63,7 @@ export async function PUT(
         const updatedNote = await prisma.note.update({
             where: { id: id },
             data: {
-                markdown,
+                content,
                 topicId,
             },
         });

@@ -1,6 +1,6 @@
 export interface Note {
     id: string;
-    markdown: string;
+    content: string;
     topicId: string;
     number: number;
 }
