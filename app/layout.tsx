@@ -3,12 +3,13 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import Navbar from "@/components/navbar/Navbar";
 import AuthProvider from "@/components/auth/AuthProvider";
+import { montserrat } from "@/font";
 
 export const metadata: Metadata = {
     title: "Learn German Africa CMS",
     description: "A content management system for Learn German Africa",
     icons: {
-        icon: "/logo.jpg",
+        icon: "/logo.svg",
     },
 };
 
@@ -18,7 +19,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en">
+        <html lang="en" className={`${montserrat.variable} bg-[#F1F0F3]`}>
             <AuthProvider>
                 <body>
                     <Navbar />

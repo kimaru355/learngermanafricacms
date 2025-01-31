@@ -33,13 +33,13 @@ export async function GET(): Promise<
 export async function POST(req: Request) {
     try {
         const body = await req.json();
-        const { markdown, topicId } = body;
+        const { content, topicId } = body;
 
-        if (!markdown || !topicId) {
+        if (!content || !topicId) {
             const response: ResponseType<null> = {
                 success: false,
                 message:
-                    "Please provide all required fields: markdown, topicId.",
+                    "Please provide all required fields: content, topicId.",
                 data: null,
             };
             return NextResponse.json(response, { status: 200 });
@@ -53,7 +53,7 @@ export async function POST(req: Request) {
 
         const newNote = await prisma.note.create({
             data: {
-                markdown,
+                content,
                 number: totalNotes + 1,
                 topicId,
             },
