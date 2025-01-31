@@ -1,9 +1,8 @@
 import { handlePrismaError } from "@/lib/handlePrismaError";
-import { PrismaClient } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { NextResponse } from "next/server";
 
-const prisma = new PrismaClient();
+import prisma from "@/utils/prisma";
 
 // get a single note using topicId and number
 export async function GET(

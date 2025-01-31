@@ -1,7 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { PrismaClient } from "@prisma/client";
 import axios from "axios";
-import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 
 const api = "http://localhost:3000";
@@ -9,10 +8,10 @@ const api = "http://localhost:3000";
 const createOwner = async () => {
     try {
         const prisma = new PrismaClient();
-        dotenv.config();
         const user = await prisma.user.create({
             data: {
                 email: process.env.OWNER_EMAIL,
+                isEmailVerified: true,
                 name: process.env.OWNER_NAME,
                 password: bcrypt.hashSync(process.env.OWNER_PASSWORD, 10),
                 role: "OWNER",

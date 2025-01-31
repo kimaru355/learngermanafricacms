@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import Navbar from "@/components/navbar/Navbar";
+import AuthProvider from "@/components/auth/AuthProvider";
 
 export const metadata: Metadata = {
     title: "Learn German Africa CMS",
     description: "A content management system for Learn German Africa",
+    icons: {
+        icon: "/logo.jpg",
+    },
 };
 
 export default function RootLayout({
@@ -14,10 +19,13 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body>
-                {children}
-                <Toaster />
-            </body>
+            <AuthProvider>
+                <body>
+                    <Navbar />
+                    {children}
+                    <Toaster />
+                </body>
+            </AuthProvider>
         </html>
     );
 }

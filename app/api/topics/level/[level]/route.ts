@@ -3,11 +3,9 @@ import { GermanLevel } from "@/lib/interfaces/germanLevel";
 import { Level } from "@/lib/interfaces/levels";
 import { ResponseType } from "@/lib/interfaces/ResponseType";
 import { Topic } from "@/lib/interfaces/topic";
-import { PrismaClient } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { NextResponse } from "next/server";
-
-const prisma = new PrismaClient();
+import prisma from "@/utils/prisma";
 
 export async function GET(
     req: Request,

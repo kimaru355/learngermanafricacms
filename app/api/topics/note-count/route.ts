@@ -1,11 +1,10 @@
 import { handlePrismaError } from "@/lib/handlePrismaError";
 import { ResponseType } from "@/lib/interfaces/ResponseType";
 import { TopicWithNotesCount } from "@/lib/interfaces/topicWithNotesCount";
-import { PrismaClient } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { NextResponse } from "next/server";
+import prisma from "@/utils/prisma";
 
-const prisma = new PrismaClient();
 export async function GET(): Promise<
     NextResponse<ResponseType<TopicWithNotesCount[] | null>>
 > {
