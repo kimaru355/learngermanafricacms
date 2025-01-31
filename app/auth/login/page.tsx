@@ -1,36 +1,40 @@
 "use client";
 
 import Link from "next/link";
-import axios from "axios";
+import { signIn } from "next-auth/react";
 import {
     Card,
     CardHeader,
     CardTitle,
     CardDescription,
     CardContent,
-    CardFooter,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
-import { ResponseType } from "@/lib/interfaces/ResponseType";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function Auth() {
     const emailInputRef = useRef<HTMLInputElement>(null);
     const passwordInputRef = useRef<HTMLInputElement>(null);
     const { toast } = useToast();
     const router = useRouter();
+    const path = usePathname();
+    const searchParams = useSearchParams();
+    const error = searchParams.get("error");
 
     const handleLogin = async () => {
         if (!emailInputRef.current || !passwordInputRef.current) {
             return;
         }
+
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const email: string = emailInputRef.current.value;
+        const password: string = passwordInputRef.current.value;
 
+        // Validation
         if (!email) {
             toast({
                 title: "Email is required",
@@ -45,7 +49,6 @@ export default function Auth() {
             });
             return;
         }
-        const password: string = passwordInputRef.current.value;
         if (!password) {
             toast({
                 title: "Password is required",
@@ -61,30 +64,57 @@ export default function Auth() {
             return;
         }
 
-        const result: ResponseType<null> = (
-            await axios.post("/api/auth/login", {
-                email,
-                password,
-            })
-        ).data;
-        if (!result.success) {
-            toast({
-                title: "Login failed",
-                description: result.message,
-                variant: "destructive",
-            });
+        // Use `signIn` from next-auth
+        const result = await signIn("credentials", {
+            redirect: false, // Prevent automatic redirect
+            email,
+            password,
+        });
+        if (result?.error) {
+            router.push(result.error);
         } else {
-            emailInputRef.current.value = "";
-            passwordInputRef.current.value = "";
             toast({
                 title: "Login successful",
                 variant: "success",
             });
-            setTimeout(() => {
-                router.push("/dashboard");
-            }, 2000);
+            router.push("/manage"); // Redirect to the dashboard or desired page
         }
     };
+
+    const handleGoogleLogin = async () => {
+        await signIn("google");
+    };
+
+    useEffect(() => {
+        if (!error) {
+            return;
+        }
+        let message = "";
+        switch (error) {
+            case "missing-credentials":
+                message = "Email and Password are required";
+                break;
+            case "invalid-email-or-password":
+                message = "Invalid Email or Password";
+                break;
+            case "no-password-set":
+                message =
+                    "No password set for this account. Please use Google sign-in";
+                break;
+            default:
+                message = "An error occurred during sign-in";
+                break;
+        }
+        const timeout = setTimeout(() => {
+            toast({
+                title: "Login failed",
+                description: message,
+                variant: "destructive",
+            });
+            router.push("/auth/login");
+        }, 200);
+        return () => clearTimeout(timeout);
+    }, [path, error, toast, router]);
 
     return (
         <main className="flex justify-center items-center bg-gray-100 dark:bg-gray-950 px-4 py-12 w-full min-h-screen">
@@ -137,18 +167,16 @@ export default function Auth() {
                         >
                             Login
                         </Button>
+
+                        <p>Or you can Sign in with Google</p>
+                        <Button
+                            variant="outline"
+                            className="w-full"
+                            onClick={handleGoogleLogin}
+                        >
+                            Sign in with Google
+                        </Button>
                     </CardContent>
-                    <CardFooter className="text-center text-sm">
-                        <>
-                            Don&apos;t have an account?
-                            <Link
-                                href="/auth/register"
-                                className="ml-1 font-medium text-gray-500 hover:text-gray-900 dark:hover:text-gray-50 dark:text-gray-400 underline underline-offset-2"
-                            >
-                                Sign up
-                            </Link>
-                        </>
-                    </CardFooter>
                 </Card>
             </div>
         </main>

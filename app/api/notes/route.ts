@@ -1,11 +1,9 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import { ResponseType } from "@/lib/interfaces/ResponseType";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { Note } from "@/lib/interfaces/note";
 import { handlePrismaError } from "@/lib/handlePrismaError";
-
-const prisma = new PrismaClient();
+import prisma from "@/utils/prisma";
 
 // GET: Retrieve all notes
 export async function GET(): Promise<

@@ -1,10 +1,8 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import { ResponseType } from "@/lib/interfaces/ResponseType";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { handlePrismaError } from "@/lib/handlePrismaError";
-
-const prisma = new PrismaClient();
+import prisma from "@/utils/prisma";
 
 // GET: Retrieve a single topic by ID
 export async function GET(
