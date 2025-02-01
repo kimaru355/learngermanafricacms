@@ -1,4 +1,4 @@
-import Levels from "@/components/manage/levels/levels";
+import Levels from "@/components/content/levels/levels";
 
 export default function Level() {
     return <Levels />;

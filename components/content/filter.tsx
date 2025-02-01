@@ -12,15 +12,15 @@ export default function ManageFilter() {
     const navLinks: { name: string; link: string }[] = [
         {
             name: "Levels",
-            link: "/manage/levels",
+            link: "/content/levels",
         },
         {
             name: "Topics",
-            link: "/manage/topics",
+            link: "/content/topics",
         },
         {
             name: "Notes",
-            link: "/manage/notes",
+            link: "/content/notes",
         },
     ];
 

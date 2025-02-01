@@ -40,7 +40,7 @@ export async function middleware(req: NextRequest) {
     }
     // allow if email is verified
     if (path === "/") {
-        return NextResponse.redirect(new URL("/manage/levels", req.url));
+        return NextResponse.redirect(new URL("/content/levels", req.url));
     }
     return NextResponse.next();
 }

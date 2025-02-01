@@ -77,7 +77,7 @@ export default function Auth() {
                 title: "Login successful",
                 variant: "success",
             });
-            router.push("/manage"); // Redirect to the dashboard or desired page
+            router.push("/content"); // Redirect to the dashboard or desired page
         }
     };
 
