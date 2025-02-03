@@ -58,7 +58,13 @@ export default function Navbar() {
                 href={"/dashboard"}
                 className="flex justify-center items-center gap-2"
             >
-                <Image src="/logo.svg" width={50} height={50} alt="logo" />
+                <Image
+                    src="/logo.svg"
+                    priority={true}
+                    width={50}
+                    height={50}
+                    alt="logo"
+                />
                 <p className="text-xs md:text-xl">Learn German Africa</p>
             </Link>
             {status === "unauthenticated" && (

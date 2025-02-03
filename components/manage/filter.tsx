@@ -3,6 +3,8 @@
 import { usePathname, useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import NotesFilter from "./notes/notesFilter";
+import TopicsFilter from "./topics/topicsFilter";
 
 export default function ManageFilter() {
     const path = usePathname();
@@ -49,6 +51,10 @@ export default function ManageFilter() {
             </RadioGroup>
 
             <Label className="mt-4 text-[#A3A7B9] text-[20px]">Filter by</Label>
+            {/* Topics Filter */}
+            {path === "/manage/topics" && <TopicsFilter />}
+            {/* Topics Filter */}
+            {path === "/manage/notes" && <NotesFilter />}
         </section>
     );
 }

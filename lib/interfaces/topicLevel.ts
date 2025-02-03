@@ -6,7 +6,7 @@ export interface TopicLevel {
     description: string;
     imageUrl: string;
     levelId: string;
-    createdAt: string;
-    updatedAt: string;
+    createdAt: Date;
+    updatedAt: Date;
     level: Level;
 }
