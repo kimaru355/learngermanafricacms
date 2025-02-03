@@ -12,7 +12,7 @@ export default function Content() {
                 <Link href="/manage/topics">
                     <Button>Topics</Button>
                 </Link>
-                <Link href="/manage/notes">
+                <Link href="/manage/manage">
                     <Button>Notes</Button>
                 </Link>
             </div>

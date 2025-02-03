@@ -11,10 +11,17 @@ export async function GET(): Promise<
 > {
     try {
         const levels = await prisma.level.findMany();
+        const levelOrder = ["A1", "A2", "B1", "B2", "C1", "C2"];
+        const updatedLevels = levels
+            .map((level) => {
+                const index = levelOrder.indexOf(level.name);
+                return { ...level, order: index };
+            })
+            .sort((a, b) => a.order - b.order);
         const response: ResponseType<typeof levels> = {
             success: true,
             message: "Levels found.",
-            data: levels,
+            data: updatedLevels,
         };
         return NextResponse.json(response);
     } catch (error: unknown) {

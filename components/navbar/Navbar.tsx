@@ -23,7 +23,7 @@ export default function Navbar() {
     const router = useRouter();
     const path = usePathname();
 
-    const navLinks: { name: string; link: string }[] = [
+    const manageLinks: { name: string; link: string }[] = [
         {
             name: "Dashboard",
             link: "/dashboard",
@@ -31,6 +31,13 @@ export default function Navbar() {
         {
             name: "Manage",
             link: "/manage/levels",
+        },
+    ];
+
+    const profileLinks: { name: string; link: string }[] = [
+        {
+            name: "Profile",
+            link: "/profile",
         },
     ];
 
@@ -43,79 +50,173 @@ export default function Navbar() {
         if (session) {
             setUser(session.user);
         }
-    }, [status, path]);
+    }, [status, path, session]);
 
     return (
-        <nav className="flex justify-between items-center px-4 lg:px-8 pt-2 w-full text-white">
-            <div className="flex justify-between items-center bg-linear-to-r from-deep-blue-gradient-start to-deep-blue-gradient-end px-4 md:px-12 p-4 rounded-4xl w-full">
+        <nav className="top-0 z-40 sticky flex justify-between items-center bg-linear-to-r from-deep-blue-gradient-start to-deep-blue-gradient-end md:px-12 p-4 md:rounded-4xl text-white">
+            <Link
+                href={"/dashboard"}
+                className="flex justify-center items-center gap-2"
+            >
+                <Image src="/logo.svg" width={50} height={50} alt="logo" />
+                <p className="text-xs md:text-xl">Learn German Africa</p>
+            </Link>
+            {status === "unauthenticated" && (
                 <Link
-                    href={"/"}
-                    className="flex justify-center items-center gap-2"
+                    href={"/auth/login"}
+                    className="bg-black px-4 py-2 rounded-lg text-white"
                 >
-                    <Image src="/logo.svg" width={50} height={50} alt="logo" />
-                    <p className="text-xl">Learn German Africa</p>
+                    Login
                 </Link>
-                {status === "unauthenticated" && (
-                    <Link
-                        href={"/auth/login"}
-                        className="bg-black px-4 py-2 rounded-lg text-white"
-                    >
-                        Login
-                    </Link>
-                )}
-                {status === "authenticated" && (
-                    <div className="space-x-4">
-                        {navLinks.map((link, index) => (
-                            <Link
-                                key={index}
-                                href={link.link}
-                                className={`px-4 py-2 rounded-xl text-lg text-[#D2D5D8] ${
-                                    path === link.link ? "bg-[#2F384E]" : ""
-                                }`}
+            )}
+            {/* Desktop Manage Menu */}
+            {status === "authenticated" && (
+                <div className="md:block space-x-4 hidden">
+                    {manageLinks.map((link, index) => (
+                        <Link
+                            key={index}
+                            href={link.link}
+                            className={`px-4 py-2 rounded-xl text-lg text-[#D2D5D8] ${
+                                path === link.link ? "bg-[#2F384E]" : ""
+                            }`}
+                        >
+                            {link.name}
+                        </Link>
+                    ))}
+                </div>
+            )}
+            {/* Mobile Menu */}
+            {status === "authenticated" && (
+                <div className="md:hidden">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger className="hover:cursor-pointer">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="w-6 h-6 text-white"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
                             >
-                                {link.name}
-                            </Link>
-                        ))}
-                    </div>
-                )}
-                {status === "authenticated" && user && (
-                    <div>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger className="hover:cursor-pointer">
-                                <div className="flex justify-center items-center bg-[#D2D5D8] rounded-full w-20 h-20 text-black">
-                                    <Avatar>
-                                        <AvatarImage
-                                            src={user.profileImageUrl}
-                                            alt="Profile Image"
-                                        />
-                                        <AvatarFallback>
-                                            {user.name
-                                                .split(" ")[0]
-                                                .split("")[0] || ""}
-                                            {user.name
-                                                .split(" ")[1]
-                                                .split("")[0] || ""}
-                                        </AvatarFallback>
-                                    </Avatar>
-                                </div>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent>
-                                <DropdownMenuLabel>
-                                    My Account
-                                </DropdownMenuLabel>
-                                <DropdownMenuSeparator />
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M4 6h16M4 12h16m-7 6h7"
+                                />
+                            </svg>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                            <DropdownMenuLabel>Manage</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            {manageLinks.map((link, index) => (
                                 <DropdownMenuItem
+                                    key={index}
                                     onClick={() => {
-                                        signOut();
+                                        router.push(link.link);
                                     }}
+                                    className={`${
+                                        path === link.link
+                                            ? "text-[#D2D5D8] bg-[#2F384E] w-full"
+                                            : "text-black "
+                                    }`}
                                 >
-                                    Logout
+                                    {link.name}
                                 </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </div>
-                )}
-            </div>
+                            ))}
+                            <DropdownMenuSeparator />
+                            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            {profileLinks.map((link, index) => (
+                                <DropdownMenuItem
+                                    key={index}
+                                    onClick={() => {
+                                        router.push(link.link);
+                                    }}
+                                    className={`${
+                                        path === link.link
+                                            ? "text-[#D2D5D8] bg-[#2F384E] w-full"
+                                            : "text-black "
+                                    }`}
+                                >
+                                    <Link href={link.link}>{link.name}</Link>
+                                </DropdownMenuItem>
+                            ))}
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                                onClick={async () => {
+                                    await signOut();
+                                    router.push("/auth/login");
+                                }}
+                            >
+                                Logout
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
+            )}
+            {/* Desktop Profile Menu */}
+            {status === "authenticated" && user && (
+                <div className="md:block hidden">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger className="hover:cursor-pointer">
+                            <div className="flex justify-center items-center rounded-full">
+                                <Avatar className="w-16 h-16">
+                                    <AvatarImage
+                                        src={user.profileImageUrl}
+                                        alt="Profile Image"
+                                    />
+                                    <AvatarFallback className="bg-[#D2D5D8] font-bold text-2xl text-black">
+                                        {user.name.split(" ")[0].split("")[0] ||
+                                            ""}
+                                        {user.name.split(" ")[1].split("")[0] ||
+                                            ""}
+                                    </AvatarFallback>
+                                </Avatar>
+                            </div>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                            <DropdownMenuLabel className="text-lg">
+                                My Account
+                            </DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            {profileLinks.map((link, index) => (
+                                <DropdownMenuItem
+                                    key={index}
+                                    onClick={() => {
+                                        router.push(link.link);
+                                    }}
+                                    className={`text-lg ${
+                                        path === link.link
+                                            ? "text-[#D2D5D8] bg-[#2F384E] w-full"
+                                            : "text-black "
+                                    }`}
+                                >
+                                    <Link
+                                        href={link.link}
+                                        className={`${
+                                            path === link.link
+                                                ? "text-[#D2D5D8] bg-[#2F384E] w-full"
+                                                : "text-black "
+                                        }`}
+                                    >
+                                        {link.name}
+                                    </Link>
+                                </DropdownMenuItem>
+                            ))}
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                                onClick={async () => {
+                                    await signOut();
+                                    router.push("/auth/login");
+                                }}
+                                className="text-lg"
+                            >
+                                Logout
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
+            )}
         </nav>
     );
 }

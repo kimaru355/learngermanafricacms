@@ -21,6 +21,23 @@ const createOwner = async () => {
     }
 };
 
+const createAdmin = async () => {
+    try {
+        const user = await prisma.user.create({
+            data: {
+                email: process.env.ADMIN_EMAIL,
+                isEmailVerified: true,
+                name: process.env.ADMIN_NAME,
+                password: bcrypt.hashSync(process.env.ADMIN_PASSWORD, 10),
+                role: "ADMIN",
+            },
+        });
+        console.log("Admin created", user);
+    } catch (error) {
+        console.log("Error creating Admin", error.message);
+    }
+};
+
 const createLevels = async () => {
     const levels = [
         {
@@ -114,6 +131,7 @@ const runAll = async () => {
     await createTopics();
     await createNotes();
     await createOwner();
+    await createAdmin();
 };
 
 runAll();

@@ -19,12 +19,14 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" className={`${montserrat.variable} bg-[#F1F0F3]`}>
+        <html lang="en" className={`${montserrat.variable}`}>
             <AuthProvider>
-                <body>
-                    <Navbar />
-                    {children}
-                    <Toaster />
+                <body className="flex flex-col items-center bg-[#F1F0F3] w-full min-h-screen text-black">
+                    <main className="md:px-8 w-full max-w-[120rem]">
+                        <Navbar />
+                        {children}
+                        <Toaster />
+                    </main>
                 </body>
             </AuthProvider>
         </html>

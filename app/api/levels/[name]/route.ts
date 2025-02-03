@@ -54,13 +54,13 @@ export async function PUT(
     try {
         const { name } = await params;
         const body = await req.json();
-        const { newName, imageUrl, description } = body;
+        const { imageUrl, description } = body;
 
-        if (!newName || !imageUrl || !description) {
+        if (!imageUrl || !description) {
             const response: ResponseType<null> = {
                 success: false,
                 message:
-                    "Please provide all required fields: name, imageUrl, description.",
+                    "Please provide all required fields: imageUrl, description.",
                 data: null,
             };
             return NextResponse.json(response, { status: 200 });
@@ -69,7 +69,6 @@ export async function PUT(
         const updatedLevel = await prisma.level.update({
             where: { name: name },
             data: {
-                name: newName,
                 imageUrl,
                 description,
             },

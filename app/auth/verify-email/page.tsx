@@ -90,7 +90,7 @@ export default function VerifyEmail() {
     }, [countdown]);
 
     return (
-        <main className="flex justify-center items-center bg-gray-100 dark:bg-gray-950 px-4 py-12 w-full min-h-screen">
+        <section className="flex justify-center items-center bg-gray-100 dark:bg-gray-950 px-4 py-12 w-full min-h-screen">
             <div className="space-y-4 w-full max-w-md">
                 <Card>
                     <CardHeader className="space-y-1">
@@ -159,6 +159,6 @@ export default function VerifyEmail() {
                     )}
                 </Card>
             </div>
-        </main>
+        </section>
     );
 }

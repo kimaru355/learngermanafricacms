@@ -1,13 +1,12 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import {
-    DropdownMenu,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { usePathname, useRouter } from "next/navigation";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export default function ManageFilter() {
     const path = usePathname();
+    const router = useRouter();
 
     const navLinks: { name: string; link: string }[] = [
         {
@@ -25,41 +24,31 @@ export default function ManageFilter() {
     ];
 
     return (
-        <section>
-            <h2>Filters</h2>
+        <section className="bg-white px-8 py-6 rounded-3xl w-full md:max-w-96">
+            <h2 className="mb-2 font-semibold text-2xl md:text-3xl">Filters</h2>
 
-            <div>
-                <DropdownMenu>
-                    <DropdownMenuTrigger>
-                        <button>
-                            <span>
-                                {navLinks.map((link) => {
-                                    if (path === link.link) {
-                                        return link.name;
-                                    }
-                                })}
-                            </span>
-                        </button>
-                    </DropdownMenuTrigger>
-                    {/* <DropdownMenuContent>
-                        {navLinks.map((navLink) => (
-                            <DropdownMenuItem
-                                key={navLink.link}
-                                className={`${
-                                    path === navLink.link
-                                        ? "text-blue-500"
-                                        : "text-gray-900"
-                                }`}
-                                onClick={() => {
-                                    router.push(navLink.link);
-                                }}
-                            >
-                                {navLink.name}
-                            </DropdownMenuItem>
-                        ))}
-                    </DropdownMenuContent> */}
-                </DropdownMenu>
-            </div>
+            <Label className="text-[#A3A7B9] text-[20px]">Resources</Label>
+            <RadioGroup
+                onValueChange={(value) => {
+                    router.push(value);
+                }}
+                defaultValue={path}
+                className="py-4"
+            >
+                {navLinks.map((link) => (
+                    <div
+                        key={link.link}
+                        className="flex items-center space-x-2"
+                    >
+                        <RadioGroupItem value={link.link} id={link.name} />
+                        <Label htmlFor={link.name} className="text-lg">
+                            {link.name}
+                        </Label>
+                    </div>
+                ))}
+            </RadioGroup>
+
+            <Label className="mt-4 text-[#A3A7B9] text-[20px]">Filter by</Label>
         </section>
     );
 }
