@@ -55,7 +55,7 @@ export default function ManageHero() {
     }
 
     return (
-        <section className="bg-linear-to-r from-deep-blue-gradient-start to-deep-blue-gradient-end -mt-16 pt-20 pb-10 md:rounded-4xl text-white">
+        <section className="bg-linear-to-r from-deep-blue-gradient-start to-deep-blue-gradient-end -mt-4 md:-mt-16 pt-8 md:pt-20 pb-10 md:rounded-4xl text-white">
             <div className="mx-auto px-4 md:px-12">
                 <h1 className="mb-6 font-bold text-4xl text-white">Metrics</h1>
                 <div className="flex md:flex-row flex-col justify-between items-center gap-4">

@@ -5,14 +5,14 @@ export default function Content() {
     return (
         <section>
             <div>
-                <Link href="/content/levels">
+                <Link href="/manage/levels">
                     <Button>Levels</Button>
                 </Link>
 
-                <Link href="/content/topics">
+                <Link href="/manage/topics">
                     <Button>Topics</Button>
                 </Link>
-                <Link href="/content/notes">
+                <Link href="/manage/manage">
                     <Button>Notes</Button>
                 </Link>
             </div>
