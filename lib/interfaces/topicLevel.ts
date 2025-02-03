@@ -1,4 +1,6 @@
-export interface Topic {
+import { Level } from "./levels";
+
+export interface TopicLevel {
     id: string;
     name: string;
     description: string;
@@ -6,4 +8,5 @@ export interface Topic {
     levelId: string;
     createdAt: string;
     updatedAt: string;
+    level: Level;
 }

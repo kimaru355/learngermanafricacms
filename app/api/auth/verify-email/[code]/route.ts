@@ -3,7 +3,7 @@ import prisma from "@/utils/prisma";
 import { ResponseType } from "@/lib/interfaces/ResponseType";
 import jwt from "jsonwebtoken";
 
-export async function PUT(
+export async function GET(
     req: Request,
     { params }: { params: Promise<{ code: string }> }
 ): Promise<NextResponse<ResponseType<null>>> {

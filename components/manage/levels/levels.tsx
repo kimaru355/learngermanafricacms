@@ -13,7 +13,6 @@ export default function Levels() {
     const fetchLevels = async () => {
         try {
             const response = await fetch("/api/levels");
-            console.log("Response ", response);
             if (!response.ok) {
                 toast({
                     title: "Error fetching levels",
@@ -22,7 +21,6 @@ export default function Levels() {
                 return;
             }
             const result: ResponseType<Level[] | null> = await response.json();
-            console.log("Result ", result);
             if (!result.success || !result.data) {
                 toast({
                     title: "Error fetching levels",
