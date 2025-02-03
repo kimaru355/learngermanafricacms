@@ -13,40 +13,39 @@ export default function ManageHero() {
     const { toast } = useToast();
     const [statistics, setStatistics] = useState<Statistics | null>(null);
 
-    const fetchStatistics = async () => {
-        try {
-            const response = await fetch("/api/statistics");
-            if (!response.ok) {
-                toast({
-                    title: "Error fetching statistics",
-                    variant: "destructive",
-                });
-                return;
-            }
-            const result: ResponseType<Statistics | null> =
-                await response.json();
-            if (!result.success || !result.data) {
-                toast({
-                    title: "Error fetching statistics",
-                    description: result.message,
-                    variant: "destructive",
-                });
-                return;
-            }
-            setStatistics(result.data);
-        } catch {
-            toast({
-                title: "Error fetching statistics",
-                description: "An error occurred.",
-                variant: "destructive",
-            });
-        }
-    };
-
     useEffect(() => {
         if (!session) {
             return;
         }
+        const fetchStatistics = async () => {
+            try {
+                const response = await fetch("/api/statistics");
+                if (!response.ok) {
+                    toast({
+                        title: "Error fetching statistics",
+                        variant: "destructive",
+                    });
+                    return;
+                }
+                const result: ResponseType<Statistics | null> =
+                    await response.json();
+                if (!result.success || !result.data) {
+                    toast({
+                        title: "Error fetching statistics",
+                        description: result.message,
+                        variant: "destructive",
+                    });
+                    return;
+                }
+                setStatistics(result.data);
+            } catch {
+                toast({
+                    title: "Error fetching statistics",
+                    description: "An error occurred.",
+                    variant: "destructive",
+                });
+            }
+        };
         fetchStatistics();
     }, [session]);
 

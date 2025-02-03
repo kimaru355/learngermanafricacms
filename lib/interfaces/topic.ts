@@ -4,6 +4,6 @@ export interface Topic {
     description: string;
     imageUrl: string;
     levelId: string;
-    createdAt: string;
-    updatedAt: string;
+    createdAt: Date;
+    updatedAt: Date;
 }

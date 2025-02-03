@@ -14,45 +14,45 @@ export default function Page({
     const { toast } = useToast();
     const [level, setLevel] = useState<Level | null>(null);
 
-    const fetchLevel = async () => {
-        try {
-            const { levelName } = await params;
-            if (!levelName) {
-                toast({
-                    title: "Invalid level name",
-                    variant: "destructive",
-                });
-                return;
-            }
-            const response = await fetch(`/api/levels/${levelName}`);
-            if (!response.ok) {
-                toast({
-                    title: "Error fetching level",
-                    variant: "destructive",
-                });
-                return;
-            }
-            const result: ResponseType<Level | null> = await response.json();
-            if (!result.success || !result.data) {
-                toast({
-                    title: "Error fetching level",
-                    description: result.message,
-                    variant: "destructive",
-                });
-                return;
-            }
-            setLevel(result.data);
-        } catch {
-            toast({
-                title: "Error fetching level",
-                description: "An error occurred.",
-                variant: "destructive",
-            });
-            return;
-        }
-    };
-
     useEffect(() => {
+        const fetchLevel = async () => {
+            try {
+                const { levelName } = await params;
+                if (!levelName) {
+                    toast({
+                        title: "Invalid level name",
+                        variant: "destructive",
+                    });
+                    return;
+                }
+                const response = await fetch(`/api/levels/${levelName}`);
+                if (!response.ok) {
+                    toast({
+                        title: "Error fetching level",
+                        variant: "destructive",
+                    });
+                    return;
+                }
+                const result: ResponseType<Level | null> =
+                    await response.json();
+                if (!result.success || !result.data) {
+                    toast({
+                        title: "Error fetching level",
+                        description: result.message,
+                        variant: "destructive",
+                    });
+                    return;
+                }
+                setLevel(result.data);
+            } catch {
+                toast({
+                    title: "Error fetching level",
+                    description: "An error occurred.",
+                    variant: "destructive",
+                });
+                return;
+            }
+        };
         fetchLevel();
     }, []);
 

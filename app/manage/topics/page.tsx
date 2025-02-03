@@ -19,33 +19,32 @@ export default function Topics() {
     const [topics, setTopics] = useState<TopicLevel[]>([]);
     const { toast } = useToast();
 
-    const fetchTopics = async () => {
-        try {
-            const response = await fetch("/api/topics");
-            if (!response.ok) {
-                toast({
-                    title: "Error fetching topics",
-                    variant: "destructive",
-                });
-                return;
-            }
-            const result: ResponseType<TopicLevel[] | null> =
-                await response.json();
-            if (!result.success || !result.data) {
-                toast({
-                    title: "Error fetching topics",
-                    description: result.message,
-                    variant: "destructive",
-                });
-                return;
-            }
-            setTopics(result.data);
-        } catch {
-            return <div>An Error Occurred</div>;
-        }
-    };
-
     useEffect(() => {
+        const fetchTopics = async () => {
+            try {
+                const response = await fetch("/api/topics");
+                if (!response.ok) {
+                    toast({
+                        title: "Error fetching topics",
+                        variant: "destructive",
+                    });
+                    return;
+                }
+                const result: ResponseType<TopicLevel[] | null> =
+                    await response.json();
+                if (!result.success || !result.data) {
+                    toast({
+                        title: "Error fetching topics",
+                        description: result.message,
+                        variant: "destructive",
+                    });
+                    return;
+                }
+                setTopics(result.data);
+            } catch {
+                return <div>An Error Occurred</div>;
+            }
+        };
         fetchTopics();
     }, []);
 
