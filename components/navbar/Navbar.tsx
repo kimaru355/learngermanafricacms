@@ -77,7 +77,12 @@ export default function Navbar() {
                             key={index}
                             href={link.link}
                             className={`px-4 py-2 rounded-xl text-lg text-[#D2D5D8] ${
-                                path === link.link ? "bg-[#2F384E]" : ""
+                                path === link.link
+                                    ? "bg-[#2F384E]"
+                                    : path.startsWith("/manage") &&
+                                      link.link.startsWith("/manage")
+                                    ? "bg-[#2F384E]"
+                                    : ""
                             }`}
                         >
                             {link.name}

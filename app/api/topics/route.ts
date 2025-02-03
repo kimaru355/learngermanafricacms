@@ -7,7 +7,11 @@ import prisma from "@/utils/prisma";
 // GET: Retrieve all topics
 export async function GET() {
     try {
-        const topics = await prisma.topic.findMany();
+        const topics = await prisma.topic.findMany({
+            include: {
+                level: true,
+            },
+        });
         const response: ResponseType<typeof topics> = {
             success: true,
             message: "All Topics found.",
