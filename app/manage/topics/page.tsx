@@ -14,15 +14,34 @@ import { format } from "date-fns";
 import { ResponseType } from "@/lib/interfaces/ResponseType";
 import { Button } from "@/components/ui/button";
 import { TopicLevel } from "@/lib/interfaces/topicLevel";
+import { useSearchParams } from "next/navigation";
 
-export default function Topics() {
+export default function Page() {
     const [topics, setTopics] = useState<TopicLevel[]>([]);
     const { toast } = useToast();
+    const params = useSearchParams();
 
     useEffect(() => {
         const fetchTopics = async () => {
             try {
-                const response = await fetch("/api/topics");
+                const levels =
+                    params.get("levels") !== ""
+                        ? params.get("levels")?.split(" ") || []
+                        : [];
+                const url =
+                    levels.length > 0 ? "/api/topics/levels" : "/api/topics";
+                const body =
+                    levels.length > 0
+                        ? JSON.stringify({ levelNames: levels })
+                        : undefined;
+                const method = levels.length > 0 ? "PUT" : "GET";
+                const response = await fetch(url, {
+                    method,
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body,
+                });
                 if (!response.ok) {
                     toast({
                         title: "Error fetching topics",
@@ -46,7 +65,7 @@ export default function Topics() {
             }
         };
         fetchTopics();
-    }, []);
+    }, [params]);
 
     return (
         <section className="bg-white px-2 py-2 rounded-xl md:rounded-4xl w-full">
