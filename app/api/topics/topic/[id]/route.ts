@@ -95,6 +95,9 @@ export async function DELETE(
 ) {
     try {
         const { id } = await params;
+        await prisma.note.deleteMany({
+            where: { topicId: id },
+        });
         const deletedTopic = await prisma.topic.delete({
             where: { id: id },
         });
@@ -111,7 +114,7 @@ export async function DELETE(
         }
         return NextResponse.json({
             success: false,
-            message: "An error occurred while registering user.",
+            message: "An error occurred while deleting topic.",
             data: null,
         });
     }
