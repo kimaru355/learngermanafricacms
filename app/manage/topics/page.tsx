@@ -12,9 +12,20 @@ import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { ResponseType } from "@/lib/interfaces/ResponseType";
-import { Button } from "@/components/ui/button";
 import { TopicLevel } from "@/lib/interfaces/topicLevel";
 import { useSearchParams } from "next/navigation";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import Link from "next/link";
 
 export default function Page() {
     const [topics, setTopics] = useState<TopicLevel[]>([]);
@@ -67,11 +78,57 @@ export default function Page() {
         fetchTopics();
     }, [params]);
 
+    const deleteTopic = async (topicId: string) => {
+        if (!topicId) {
+            toast({
+                title: "Error deleting topic",
+                description: "Invalid topic id",
+                variant: "destructive",
+            });
+        }
+        try {
+            const response = await fetch(`/api/topics/topic/${topicId}`, {
+                method: "DELETE",
+            });
+            if (!response.ok) {
+                toast({
+                    title: "Error deleting topic",
+                    variant: "destructive",
+                });
+                return;
+            }
+            const result: ResponseType<null> = await response.json();
+            if (!result.success) {
+                toast({
+                    title: "Error deleting topic",
+                    description: result.message,
+                    variant: "destructive",
+                });
+                return;
+            }
+            toast({
+                title: "Topic deleted successfully",
+                variant: "success",
+            });
+            window.location.reload();
+        } catch {
+            toast({
+                title: "Error deleting topic",
+                variant: "destructive",
+            });
+        }
+    };
+
     return (
         <section className="bg-white px-2 py-2 rounded-xl md:rounded-4xl w-full">
             <div className="flex justify-between my-4 w-full text-lg">
                 <h2 className="font-semibold text-2xl md:text-3xl">Topics</h2>
-                <Button>+ Add Topic</Button>
+                <Link
+                    href={"/topics/update/new"}
+                    className="bg-black px-4 py-2 rounded-xl text-center text-white"
+                >
+                    + Add Topic
+                </Link>
             </div>
             <Table className="w-full">
                 <TableHeader className="bg-[rgba(167,126,250,0.1)]">
@@ -105,12 +162,45 @@ export default function Page() {
                                 )}
                             </TableCell>
                             <TableCell className="flex justify-center space-x-2 md:text-lg">
-                                <Button className="border-[#000412] bg-white border text-[#000412]">
-                                    Edit
-                                </Button>
-                                <Button className="border-[#FF3C5F] bg-white border text-[#FF3C5F]">
-                                    Delete
-                                </Button>
+                                <Link
+                                    href={`/topics/update/${topic.id}`}
+                                    className="border-[#000412] bg-white py-1 border rounded-xl w-24 text-[#000412] text-center"
+                                >
+                                    View
+                                </Link>
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <button className="border-[#FF3C5F] bg-white py-1 border rounded-xl w-24 text-[#FF3C5F]">
+                                            Delete
+                                        </button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>
+                                                Are you absolutely sure?
+                                            </AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                This action cannot be undone.
+                                                This will permanently delete
+                                                this topic and all of it&rsquo;s
+                                                notes.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>
+                                                Cancel
+                                            </AlertDialogCancel>
+                                            <AlertDialogAction
+                                                className="bg-red-400 hover:bg-red-600 text-white hover:cursor-pointer"
+                                                onClick={() => {
+                                                    deleteTopic(topic.id);
+                                                }}
+                                            >
+                                                Continue
+                                            </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
                             </TableCell>
                         </TableRow>
                     ))}
