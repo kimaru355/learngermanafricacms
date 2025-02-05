@@ -1,3 +1,5 @@
+"use client";
+
 import {
     Card,
     CardContent,
@@ -11,9 +13,63 @@ import Image from "next/image";
 import UpdateLevel from "./updateLevel";
 import { CldUploadWidget } from "next-cloudinary";
 import { ArrowUpRightIcon } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { ResponseType } from "@/lib/interfaces/ResponseType";
 
 export default function LevelCard({ level }: { level: Level }) {
-    // const handleImageUpload = async () => {}
+    const { toast } = useToast();
+
+    const handleImageUpload = async (imageUrl: string) => {
+        try {
+            if (!imageUrl) {
+                toast({
+                    title: "Image Upload Failed",
+                    description: "Please try again",
+                    variant: "destructive",
+                });
+                return;
+            }
+            const response = await fetch(`/api/levels/level/${level.id}`, {
+                method: "PUT",
+                body: JSON.stringify({
+                    fieldToUpdate: "imageUrl",
+                    value: imageUrl,
+                }),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            if (!response.ok) {
+                toast({
+                    title: "Image Upload Failed",
+                    description: "Please try again",
+                    variant: "destructive",
+                });
+                return;
+            }
+            const result: ResponseType<null> = await response.json();
+            if (!result.success) {
+                toast({
+                    title: "Image Upload Failed",
+                    description: "Please try again",
+                    variant: "destructive",
+                });
+                return;
+            }
+            toast({
+                title: "Image Uploaded",
+                description: "Image uploaded successfully",
+                variant: "success",
+            });
+            level.imageUrl = imageUrl;
+        } catch {
+            toast({
+                title: "Image Upload Failed",
+                description: "Please try again",
+                variant: "destructive",
+            });
+        }
+    };
 
     return (
         <Card className="w-full md:max-w-96">
@@ -44,6 +100,16 @@ export default function LevelCard({ level }: { level: Level }) {
                         sources: ["local"], // Allow uploads from device
                         resourceType: "image", // Restrict to images only
                         maxFiles: 1, // Allow only one file per upload
+                    }}
+                    onSuccess={(result) => {
+                        if (
+                            !result.info ||
+                            typeof result.info === "string" ||
+                            !result.info.secure_url
+                        ) {
+                            return;
+                        }
+                        handleImageUpload(result.info.secure_url);
                     }}
                 >
                     {({ open }) => {
