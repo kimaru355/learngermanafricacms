@@ -3,6 +3,7 @@ import { ResponseType } from "@/lib/interfaces/ResponseType";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { handlePrismaError } from "@/lib/handlePrismaError";
 import prisma from "@/utils/prisma";
+import { Topic } from "@/lib/interfaces/topic";
 
 // GET: Retrieve all topics
 export async function GET() {
@@ -36,12 +37,7 @@ export async function POST(req: Request) {
         const body = await req.json();
         const { name, description, imageUrl, levelId } = body;
 
-        if (
-            !name ||
-            !description ||
-            (!imageUrl && imageUrl != "") ||
-            !levelId
-        ) {
+        if (!name || !description || !imageUrl || !levelId) {
             const response: ResponseType<null> = {
                 success: false,
                 message:
@@ -60,7 +56,7 @@ export async function POST(req: Request) {
             },
         });
 
-        const response: ResponseType<typeof newTopic> = {
+        const response: ResponseType<Topic> = {
             success: true,
             message: "Topic created successfully.",
             data: newTopic,

@@ -38,6 +38,27 @@ const createAdmin = async () => {
     }
 };
 
+const createAgents = async () => {
+    try {
+        const agents = [
+            { name: process.env.AGENT1_NAME, email: process.env.AGENT1_EMAIL },
+            {
+                name: process.env.AGENT2_NAME,
+                email: process.env.AGENT2_EMAIL,
+                isEmailVerified: true,
+                password: bcrypt.hashSync(process.env.AGENT2_PASSWORD, 10),
+                role: "AGENT",
+            },
+        ];
+        const createdAgents = await prisma.user.createMany({
+            data: agents,
+        });
+        console.log("Agents created", createdAgents);
+    } catch (error) {
+        console.log("Error creating Agents", error.message);
+    }
+};
+
 const createLevels = async () => {
     const levels = [
         {
@@ -127,11 +148,12 @@ const createNotes = async () => {
 };
 
 const runAll = async () => {
-    await createLevels();
-    await createTopics();
-    await createNotes();
-    await createOwner();
-    await createAdmin();
+    // await createLevels();
+    // await createTopics();
+    // await createNotes();
+    // await createOwner();
+    // await createAdmin();
+    await createAgents();
 };
 
 runAll();

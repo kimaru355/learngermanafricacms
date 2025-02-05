@@ -176,22 +176,33 @@ export default function Page() {
                                     </AlertDialogTrigger>
                                     <AlertDialogContent>
                                         <AlertDialogHeader>
-                                            <AlertDialogTitle>
+                                            <AlertDialogTitle className="text-xl md:text-3xl">
                                                 Are you absolutely sure?
                                             </AlertDialogTitle>
-                                            <AlertDialogDescription>
+                                            <AlertDialogDescription className="text-lg md:text-xl">
                                                 This action cannot be undone.
                                                 This will permanently delete
-                                                this topic and all of it&rsquo;s
-                                                notes.
+                                                this{" "}
+                                                <span className="text-red-400">
+                                                    topic
+                                                </span>{" "}
+                                                and{" "}
+                                                <span className="text-red-400">
+                                                    ALL
+                                                </span>{" "}
+                                                of it&rsquo;s
+                                                <span className="text-red-400">
+                                                    {" "}
+                                                    notes.
+                                                </span>
                                             </AlertDialogDescription>
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
-                                            <AlertDialogCancel>
+                                            <AlertDialogCancel className="text-lg">
                                                 Cancel
                                             </AlertDialogCancel>
                                             <AlertDialogAction
-                                                className="bg-red-400 hover:bg-red-600 text-white hover:cursor-pointer"
+                                                className="bg-red-400 hover:bg-red-600 text-lg text-white hover:cursor-pointer"
                                                 onClick={() => {
                                                     deleteTopic(topic.id);
                                                 }}

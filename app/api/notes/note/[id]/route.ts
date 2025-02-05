@@ -90,19 +90,27 @@ export async function PUT(
 export async function DELETE(
     req: Request,
     { params }: { params: Promise<{ id: string }> }
-) {
+): Promise<NextResponse<ResponseType<null>>> {
     try {
         const { id } = await params;
-        const deletedNote = await prisma.note.delete({
+        const noteToDelete = await prisma.note.findUnique({
             where: { id: id },
         });
-
-        const response: ResponseType<typeof deletedNote> = {
+        if (!noteToDelete) {
+            return NextResponse.json({
+                success: false,
+                message: "Note not found.",
+                data: null,
+            });
+        }
+        await prisma.note.delete({
+            where: { id: id },
+        });
+        return NextResponse.json({
             success: true,
             message: "Note deleted successfully.",
-            data: deletedNote,
-        };
-        return NextResponse.json(response);
+            data: null,
+        });
     } catch (error: unknown) {
         if (error instanceof PrismaClientKnownRequestError) {
             return handlePrismaError(error);

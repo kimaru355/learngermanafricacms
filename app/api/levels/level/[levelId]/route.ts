@@ -43,3 +43,44 @@ export async function GET(
         }
     }
 }
+
+export async function PUT(
+    req: Request,
+    { params }: { params: Promise<{ levelId: string }> }
+): Promise<NextResponse<ResponseType<null>>> {
+    const fields = ["description", "imageUrl"];
+    const { fieldToUpdate, value } = (await req.json()) as {
+        fieldToUpdate: string;
+        value: string;
+    };
+    if (!fieldToUpdate || !value || !fields.includes(fieldToUpdate)) {
+        return NextResponse.json({
+            success: false,
+            message:
+                "Invalid request body. Image URL or description is required.",
+            data: null,
+        });
+    }
+    const { levelId } = await params;
+    try {
+        await prisma.level.update({
+            where: { id: levelId },
+            data: { [fieldToUpdate]: value },
+        });
+        return NextResponse.json({
+            success: true,
+            message: "Level updated successfully.",
+            data: null,
+        });
+    } catch (error: unknown) {
+        if (error instanceof PrismaClientKnownRequestError) {
+            return handlePrismaError(error);
+        } else {
+            return NextResponse.json({
+                success: false,
+                message: "An error occurred.",
+                data: null,
+            });
+        }
+    }
+}
