@@ -1,3 +1,4 @@
+import { NewNote } from "../newNote";
 import { Note } from "../note";
 import { ResponseType } from "../ResponseType";
 
@@ -9,7 +10,7 @@ export interface NotesServices {
         topicId: string,
         number: number
     ): Promise<ResponseType<Note | null>>;
-    createNote(note: Note): Promise<ResponseType<Note | null>>;
+    createNote(note: NewNote): Promise<ResponseType<Note | null>>;
     updateNote(note: Note): Promise<ResponseType<Note | null>>;
     deleteNoteById(id: string): Promise<ResponseType<boolean>>;
 }

@@ -1,6 +1,6 @@
 import { GermanLevel } from "@/lib/interfaces/germanLevel";
 import { Level } from "@/lib/interfaces/levels";
-import { NoteTopic } from "@/lib/interfaces/noteTopic";
+import { NoteTopicDb } from "@/lib/interfaces/noteTopic";
 import { ResponseType } from "@/lib/interfaces/ResponseType";
 import { NextResponse } from "next/server";
 import prisma from "@/utils/prisma";
@@ -10,7 +10,7 @@ import { handlePrismaError } from "@/lib/handlePrismaError";
 
 export async function PUT(
     req: Request
-): Promise<NextResponse<ResponseType<NoteTopic[] | null>>> {
+): Promise<NextResponse<ResponseType<NoteTopicDb[] | null>>> {
     try {
         const { levelNames } = (await req.json()) as {
             levelNames: GermanLevel[];

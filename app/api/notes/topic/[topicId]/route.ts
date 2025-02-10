@@ -1,4 +1,4 @@
-import { Note } from "@/lib/interfaces/note";
+import { NoteDb } from "@/lib/interfaces/note";
 import { NextResponse } from "next/server";
 import { ResponseType } from "@/lib/interfaces/ResponseType";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
@@ -8,10 +8,10 @@ import prisma from "@/utils/prisma";
 export async function GET(
     req: Request,
     { params }: { params: Promise<{ topicId: string }> }
-): Promise<NextResponse<ResponseType<Note[] | null>>> {
+): Promise<NextResponse<ResponseType<NoteDb[] | null>>> {
     try {
         const { topicId } = await params;
-        const notes: Note[] = await prisma.note.findMany({
+        const notes: NoteDb[] = await prisma.note.findMany({
             where: {
                 topicId: topicId,
             },

@@ -1,6 +1,9 @@
 import { faker } from "@faker-js/faker";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const prisma = new PrismaClient();
 
@@ -147,13 +150,23 @@ const createNotes = async () => {
     }
 };
 
+const deleteNotes = async () => {
+    try {
+        await prisma.note.deleteMany();
+        console.log("Notes deleted");
+    } catch (error) {
+        console.log("Error on notes deletion: ", error.message);
+    }
+};
+
 const runAll = async () => {
     // await createLevels();
     // await createTopics();
     // await createNotes();
     // await createOwner();
     // await createAdmin();
-    await createAgents();
+    // await createAgents();
+    await deleteNotes();
 };
 
 runAll();

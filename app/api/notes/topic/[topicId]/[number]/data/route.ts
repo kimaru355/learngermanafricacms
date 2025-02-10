@@ -1,5 +1,5 @@
-import { Note } from "@/lib/interfaces/note";
-import { NoteWithDetails } from "@/lib/interfaces/noteWithDetails";
+import { NoteDb } from "@/lib/interfaces/note";
+import { NoteWithDetailsDb } from "@/lib/interfaces/noteWithDetails";
 import { ResponseType } from "@/lib/interfaces/ResponseType";
 import { NextResponse } from "next/server";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
@@ -9,7 +9,7 @@ import prisma from "@/utils/prisma";
 export async function GET(
     req: Request,
     { params }: { params: Promise<{ topicId: string; number: string }> }
-): Promise<NextResponse<ResponseType<NoteWithDetails | null>>> {
+): Promise<NextResponse<ResponseType<NoteWithDetailsDb | null>>> {
     try {
         const { topicId, number } = await params;
         if (!number || !topicId || isNaN(parseInt(number))) {
@@ -24,7 +24,7 @@ export async function GET(
             );
         }
 
-        const note: Note | null = await prisma.note.findFirst({
+        const note: NoteDb | null = await prisma.note.findFirst({
             where: { topicId: topicId, number: +number },
         });
         if (!note) {
@@ -52,7 +52,7 @@ export async function GET(
             },
         });
 
-        const noteWithDetails: NoteWithDetails = {
+        const noteWithDetails: NoteWithDetailsDb = {
             note,
             topic,
             count,
