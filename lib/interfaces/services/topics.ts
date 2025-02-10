@@ -2,7 +2,7 @@ import { ResponseType } from "../ResponseType";
 import { Topic } from "../topic";
 
 export interface TopicsServices {
-    getTopic(name: string): Promise<ResponseType<Topic | null>>;
+    getTopic(id: string): Promise<ResponseType<Topic | null>>;
     getAllTopics(): Promise<ResponseType<Topic[] | null>>;
     getTopicsByLevel(level: string): Promise<ResponseType<Topic[] | null>>;
     createTopic(topic: Topic): Promise<ResponseType<Topic | null>>;

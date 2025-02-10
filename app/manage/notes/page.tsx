@@ -169,7 +169,7 @@ export default function Page() {
                             </TableCell>
                             <TableCell className="flex justify-center space-x-2 md:text-lg">
                                 <Link
-                                    href={`/topics/update/${note.id}`}
+                                    href={`/notes/update/${note.id}`}
                                     className="border-[#000412] bg-white py-1 border rounded-xl w-24 text-[#000412] text-center"
                                 >
                                     View

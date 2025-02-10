@@ -3,6 +3,7 @@ import { ResponseType } from "@/lib/interfaces/ResponseType";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { handlePrismaError } from "@/lib/handlePrismaError";
 import prisma from "@/utils/prisma";
+import { NoteDb } from "@/lib/interfaces/note";
 
 // GET: Retrieve a single note by ID
 export async function GET(
@@ -48,27 +49,28 @@ export async function PUT(
     try {
         const { id } = await params;
         const body = await req.json();
-        const { content, topicId } = body;
+        const { content, topicId, number } = body;
 
-        if (!content || !topicId) {
+        if (!content || !topicId || !number) {
             const response: ResponseType<null> = {
                 success: false,
                 message:
-                    "Please provide all required fields: content, topicId.",
+                    "Please provide all required fields: content, topicId and number.",
                 data: null,
             };
             return NextResponse.json(response, { status: 200 });
         }
 
-        const updatedNote = await prisma.note.update({
+        const updatedNote: NoteDb = await prisma.note.update({
             where: { id: id },
             data: {
                 content,
                 topicId,
+                number,
             },
         });
 
-        const response: ResponseType<typeof updatedNote> = {
+        const response: ResponseType<NoteDb> = {
             success: true,
             message: "Note updated successfully.",
             data: updatedNote,

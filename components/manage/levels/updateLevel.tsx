@@ -36,7 +36,7 @@ export default function UpdateLevel({ level }: { level: Level }) {
         }
 
         try {
-            const response = await fetch("/api/levels/" + level.name, {
+            const response = await fetch("/api/levels/name/" + level.name, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
