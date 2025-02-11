@@ -5,6 +5,7 @@ import Underline from "@tiptap/extension-underline";
 import { StarterKit } from "@tiptap/starter-kit";
 import Heading from "@tiptap/extension-heading";
 import Image from "@tiptap/extension-image";
+import { Indent } from "./indent";
 
 export const extensions = [
     StarterKit.configure({
@@ -24,6 +25,7 @@ export const extensions = [
     TextStyle,
     Color,
     Image,
+    Indent,
     TextAlign.configure({
         types: ["heading", "paragraph"],
     }),

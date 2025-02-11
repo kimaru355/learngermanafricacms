@@ -159,14 +159,24 @@ const deleteNotes = async () => {
     }
 };
 
+const deleteTopics = async () => {
+    try {
+        await prisma.topic.deleteMany();
+        console.log("Topics deleted");
+    } catch (error) {
+        console.log("Error on Topics deletion: ", error.message);
+    }
+};
+
 const runAll = async () => {
-    // await createLevels();
-    // await createTopics();
-    // await createNotes();
-    // await createOwner();
-    // await createAdmin();
-    // await createAgents();
+    await createLevels();
+    await createTopics();
+    await createNotes();
+    await createOwner();
+    await createAdmin();
+    await createAgents();
     await deleteNotes();
+    await deleteTopics();
 };
 
 runAll();
