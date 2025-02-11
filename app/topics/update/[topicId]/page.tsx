@@ -11,6 +11,7 @@ import { format } from "date-fns";
 import Image from "next/image";
 import { CldUploadWidget } from "next-cloudinary";
 import UpdateTopic from "@/components/manage/topics/createTopic";
+import Notes from "@/components/topics/Notes";
 
 export default function Page() {
     const { topicId } = useParams() as { topicId: string };
@@ -264,6 +265,9 @@ export default function Page() {
                     </p>
                     <UpdateTopic topic={topic} topicId={topicId} />
                 </div>
+            </div>
+            <div className="my-8">
+                <Notes topicId={topicId} topic={oldTopic} level={level} />
             </div>
         </section>
     );

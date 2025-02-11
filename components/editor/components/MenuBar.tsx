@@ -6,6 +6,7 @@ import { HeadingMenu } from "./menus/HeadingMenu";
 import { ListMenu } from "./menus/ListMenu";
 import { ImportWordMenu } from "./menus/ImportWordMenu";
 import { ImageMenu } from "./menus/ImageMenu";
+import { IndentMenu } from "./menus/IndentMenu";
 
 interface MenuBarProps {
     editor: Editor | null;
@@ -25,6 +26,8 @@ export const MenuBar: React.FC<MenuBarProps> = ({ editor }) => {
             <ColorMenu editor={editor} />
             <div className="bg-gray-200 mx-2 w-px h-6" /> {/* Separator */}
             <AlignmentMenu editor={editor} />
+            <div className="bg-gray-200 mx-2 w-px h-6" /> {/* Separator */}
+            <IndentMenu editor={editor} />
             <div className="bg-gray-200 mx-2 w-px h-6" /> {/* Separator */}
             <ImageMenu editor={editor} />
             <div className="bg-gray-200 mx-2 w-px h-6" /> {/* Separator */}
