@@ -128,10 +128,9 @@ export default function Navbar() {
                             <DropdownMenuSeparator />
                             {manageLinks.map((link, index) => {
                                 if (
-                                    session &&
-                                    (session.user.role !== "ADMIN" ||
-                                        session.user.role !== "OWNER") &&
-                                    link.link === "/users"
+                                    link.link === "/users" &&
+                                    session.user.role !== "ADMIN" &&
+                                    session.user.role !== "OWNER"
                                 ) {
                                     return;
                                 }
