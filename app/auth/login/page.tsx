@@ -12,13 +12,16 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Eye, EyeClosed } from "lucide-react";
 
 export default function Auth() {
-    const emailInputRef = useRef<HTMLInputElement>(null);
+    const [email, setEmail] = useState<string | null>(null);
+    const [password, setPassword] = useState<string | null>(null);
     const passwordInputRef = useRef<HTMLInputElement>(null);
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const { toast } = useToast();
     const router = useRouter();
     const path = usePathname();
@@ -26,13 +29,11 @@ export default function Auth() {
     const error = searchParams.get("error");
 
     const handleLogin = async () => {
-        if (!emailInputRef.current || !passwordInputRef.current) {
+        if (!email || !password) {
             return;
         }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const email: string = emailInputRef.current.value;
-        const password: string = passwordInputRef.current.value;
 
         // Validation
         if (!email) {
@@ -137,7 +138,9 @@ export default function Auth() {
                                 type="email"
                                 placeholder="m@example.com"
                                 required
-                                ref={emailInputRef}
+                                onChange={(e) => {
+                                    setEmail(e.target.value);
+                                }}
                             />
                         </div>
                         <div className="space-y-2">
@@ -145,19 +148,43 @@ export default function Auth() {
                                 <Label htmlFor="password">Password</Label>
                                 <Link
                                     href="#"
-                                    className="font-medium text-gray-500 text-sm hover:text-gray-900 dark:hover:text-gray-50 dark:text-gray-400 underline underline-offset-2"
+                                    className="font-medium text-gray-500 hover:text-gray-900 dark:hover:text-gray-50 dark:text-gray-400 text-sm underline underline-offset-2"
                                     prefetch={false}
                                 >
                                     Forgot password?
                                 </Link>
                             </div>
-                            <Input
-                                id="password"
-                                type="password"
-                                placeholder="********"
-                                required
-                                ref={passwordInputRef}
-                            />
+                            <div className="relative">
+                                <Input
+                                    id="password"
+                                    type={
+                                        isPasswordVisible ? "text" : "password"
+                                    }
+                                    placeholder="********"
+                                    required
+                                    ref={passwordInputRef}
+                                    onChange={(e) => {
+                                        setPassword(e.target.value);
+                                    }}
+                                />
+                                <div
+                                    className="top-2 right-2 absolute hover:cursor-pointer"
+                                    onClick={() => {
+                                        setIsPasswordVisible(
+                                            !isPasswordVisible
+                                        );
+                                        if (passwordInputRef.current) {
+                                            passwordInputRef.current.focus();
+                                        }
+                                    }}
+                                >
+                                    {!isPasswordVisible ? (
+                                        <EyeClosed />
+                                    ) : (
+                                        <Eye />
+                                    )}
+                                </div>
+                            </div>
                         </div>
 
                         <Button

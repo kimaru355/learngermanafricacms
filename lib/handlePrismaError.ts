@@ -12,7 +12,6 @@ export const handlePrismaError = <T>(
             data: null,
         });
     }
-    console.log(error.message);
     return NextResponse.json({
         success: false,
         message: "An error occurred.",

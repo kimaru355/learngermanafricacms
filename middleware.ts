@@ -3,12 +3,23 @@ import { getToken } from "next-auth/jwt";
 
 export async function middleware(req: NextRequest) {
     const path = req.nextUrl.pathname;
-    // allow auth routes
     // get NEXTAUTH_SECRET from environment variables
     const secret = process.env.NEXTAUTH_SECRET;
     if (!secret) {
         throw new Error("NEXTAUTH_SECRET is not set");
     }
+
+    // Exclude static files and Next.js internals
+    if (
+        path.startsWith("/_next/") || // Next.js assets
+        path.startsWith("/favicon.ico") || // Favicon
+        path.startsWith("/logo.svg") || // Logo
+        path.startsWith("/images/") || // Public images
+        path.startsWith("/api/auth") // Allow NextAuth API routes
+    ) {
+        return NextResponse.next();
+    }
+
     // get token from request
     const token = await getToken({ req, secret });
     if (!token) {
@@ -35,7 +46,11 @@ export async function middleware(req: NextRequest) {
     }
 
     // check if email is verified, redirect to verify if not
-    if (!token.isEmailVerified) {
+    if (
+        !token.isEmailVerified &&
+        path !== "/auth/verify-email" &&
+        path !== "/auth/verify-email-code"
+    ) {
         return NextResponse.redirect(new URL("/auth/verify-email", req.url));
     }
     // allow if email is verified
@@ -47,5 +62,5 @@ export async function middleware(req: NextRequest) {
 
 // Apply middleware only to protected routes
 export const config = {
-    matcher: ["/api/:path*", "/"],
+    matcher: ["/:path*"],
 };

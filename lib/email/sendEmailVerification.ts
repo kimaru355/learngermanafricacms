@@ -1,15 +1,21 @@
 import nodemailer from "nodemailer";
-import jwt from "jsonwebtoken";
 import ejs from "ejs";
 import path from "path";
 import { ResponseType } from "../interfaces/ResponseType";
 import { EmailVerification } from "../interfaces/emailVerification";
+import { storeEmailVerification } from "./storeEmailVerification";
+
+const user = process.env.EMAIL_USER;
+const pass = process.env.EMAIL_PASSWORD;
+if (!user || !pass) {
+    throw new Error("Email credentials not provided.");
+}
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: user,
+        pass: pass,
     },
     tls: {
         rejectUnauthorized: false,
@@ -27,7 +33,8 @@ const renderTemplate = (filePath: string, data: object): Promise<string> =>
     });
 
 export const sendEmailVerification = async (
-    email: string
+    email: string,
+    code: string
 ): Promise<ResponseType<null>> => {
     const templatePath = path.join(
         process.cwd(),
@@ -35,9 +42,15 @@ export const sendEmailVerification = async (
         "mailer",
         "verifyEmail.ejs"
     );
-    const secret = process.env.NEXTAUTH_SECRET as string;
-    const code = jwt.sign({ email }, secret, { expiresIn: "1h" });
-    const verificationUrl = `${process.env.NEXTAUTH_URL}/auth/verify-email?email=${email}&code=${code}`;
+    const token = storeEmailVerification(email, code);
+    if (!token) {
+        return {
+            success: false,
+            message: "Failed to send verification code.",
+            data: null,
+        };
+    }
+    const verificationUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/verify-email-code?code=${token}`;
     const emailVerification: EmailVerification = {
         code,
         email,
@@ -50,7 +63,7 @@ export const sendEmailVerification = async (
             emailVerification
         );
         const mailOptions = {
-            from: process.env.EMAIL_USER,
+            from: user,
             to: email,
             subject: "EMAIL VERIFICATION",
             html: htmlContent,
