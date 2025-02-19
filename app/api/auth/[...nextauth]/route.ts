@@ -34,7 +34,7 @@ const authOptions: AuthOptions = {
                 }
 
                 const user = await prisma.user.findUnique({
-                    where: { email: email },
+                    where: { email: email, isDeleted: false },
                 });
 
                 if (!user) {
@@ -110,7 +110,7 @@ const authOptions: AuthOptions = {
                         return false;
                     const email = profile.email;
                     const existingUser = await prisma.user.findUnique({
-                        where: { email: email },
+                        where: { email: email, isDeleted: false },
                     });
 
                     if (!existingUser) {

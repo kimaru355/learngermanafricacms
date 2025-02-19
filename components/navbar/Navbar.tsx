@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useSession } from "next-auth/react";
-import { signOut } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -32,6 +31,10 @@ export default function Navbar() {
             name: "Manage",
             link: "/manage/levels",
         },
+        {
+            name: "Users",
+            link: "/users",
+        },
     ];
 
     const profileLinks: { name: string; link: string }[] = [
@@ -42,18 +45,13 @@ export default function Navbar() {
     ];
 
     useEffect(() => {
-        if (!path.startsWith("/auth") && status === "unauthenticated") {
-            router.push("/auth/login");
-        } else if (path.startsWith("/auth") && status === "authenticated") {
-            router.push("/");
-        }
         if (session) {
             setUser(session.user);
         }
-    }, [status, path, session]);
+    }, [status, session]);
 
     return (
-        <nav className="top-0 z-40 sticky flex justify-between items-center bg-linear-to-r from-deep-blue-gradient-start to-deep-blue-gradient-end md:px-12 p-4 md:rounded-4xl text-white">
+        <nav className="top-0 z-40 sticky flex justify-between items-center bg-linear-to-r from-deep-blue-gradient-start to-deep-blue-gradient-end p-4 md:px-12 md:rounded-4xl text-white">
             <Link
                 href={"/dashboard"}
                 className="flex justify-center items-center gap-2"
@@ -77,23 +75,32 @@ export default function Navbar() {
             )}
             {/* Desktop Manage Menu */}
             {status === "authenticated" && (
-                <div className="md:block space-x-4 hidden">
-                    {manageLinks.map((link, index) => (
-                        <Link
-                            key={index}
-                            href={link.link}
-                            className={`px-4 py-2 rounded-xl text-lg text-[#D2D5D8] ${
-                                path === link.link
-                                    ? "bg-[#2F384E]"
-                                    : path.startsWith("/manage") &&
-                                      link.link.startsWith("/manage")
-                                    ? "bg-[#2F384E]"
-                                    : ""
-                            }`}
-                        >
-                            {link.name}
-                        </Link>
-                    ))}
+                <div className="hidden md:block space-x-4">
+                    {manageLinks.map((link, index) => {
+                        if (
+                            link.link === "/users" &&
+                            session.user.role !== "ADMIN" &&
+                            session.user.role !== "OWNER"
+                        ) {
+                            return;
+                        }
+                        return (
+                            <Link
+                                key={index}
+                                href={link.link}
+                                className={`px-4 py-2 rounded-xl text-lg text-[#D2D5D8] ${
+                                    path === link.link
+                                        ? "bg-[#2F384E]"
+                                        : path.startsWith("/manage") &&
+                                          link.link.startsWith("/manage")
+                                        ? "bg-[#2F384E]"
+                                        : ""
+                                }`}
+                            >
+                                {link.name}
+                            </Link>
+                        );
+                    })}
                 </div>
             )}
             {/* Mobile Menu */}
@@ -119,21 +126,31 @@ export default function Navbar() {
                         <DropdownMenuContent>
                             <DropdownMenuLabel>Manage</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            {manageLinks.map((link, index) => (
-                                <DropdownMenuItem
-                                    key={index}
-                                    onClick={() => {
-                                        router.push(link.link);
-                                    }}
-                                    className={`${
-                                        path === link.link
-                                            ? "text-[#D2D5D8] bg-[#2F384E] w-full"
-                                            : "text-black "
-                                    }`}
-                                >
-                                    {link.name}
-                                </DropdownMenuItem>
-                            ))}
+                            {manageLinks.map((link, index) => {
+                                if (
+                                    session &&
+                                    (session.user.role !== "ADMIN" ||
+                                        session.user.role !== "OWNER") &&
+                                    link.link === "/users"
+                                ) {
+                                    return;
+                                }
+                                return (
+                                    <DropdownMenuItem
+                                        key={index}
+                                        onClick={() => {
+                                            router.push(link.link);
+                                        }}
+                                        className={`${
+                                            path === link.link
+                                                ? "text-[#D2D5D8] bg-[#2F384E] w-full"
+                                                : "text-black "
+                                        }`}
+                                    >
+                                        {link.name}
+                                    </DropdownMenuItem>
+                                );
+                            })}
                             <DropdownMenuSeparator />
                             <DropdownMenuLabel>My Account</DropdownMenuLabel>
                             <DropdownMenuSeparator />
@@ -167,7 +184,7 @@ export default function Navbar() {
             )}
             {/* Desktop Profile Menu */}
             {status === "authenticated" && user && (
-                <div className="md:block hidden">
+                <div className="hidden md:block">
                     <DropdownMenu>
                         <DropdownMenuTrigger className="hover:cursor-pointer">
                             <div className="flex justify-center items-center rounded-full">
@@ -176,7 +193,7 @@ export default function Navbar() {
                                         src={user.profileImageUrl}
                                         alt="Profile Image"
                                     />
-                                    <AvatarFallback className="bg-[#D2D5D8] font-bold text-2xl text-black">
+                                    <AvatarFallback className="bg-[#D2D5D8] font-bold text-black text-2xl">
                                         {user.name.split(" ")[0].split("")[0] ||
                                             ""}
                                         {user.name.split(" ")[1].split("")[0] ||
@@ -216,11 +233,11 @@ export default function Navbar() {
                             ))}
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
+                                className="hover:cursor-pointer"
                                 onClick={async () => {
                                     await signOut();
                                     router.push("/auth/login");
                                 }}
-                                className="text-lg"
                             >
                                 Logout
                             </DropdownMenuItem>

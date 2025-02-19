@@ -45,7 +45,6 @@ export async function GET(
         if (error instanceof PrismaClientKnownRequestError) {
             return handlePrismaError(error);
         } else {
-            console.error(error);
             return NextResponse.json({
                 success: false,
                 message: "An error occurred.",

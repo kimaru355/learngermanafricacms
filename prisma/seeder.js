@@ -44,7 +44,13 @@ const createAdmin = async () => {
 const createAgents = async () => {
     try {
         const agents = [
-            { name: process.env.AGENT1_NAME, email: process.env.AGENT1_EMAIL },
+            {
+                name: process.env.AGENT1_NAME,
+                email: process.env.AGENT1_EMAIL,
+                isEmailVerified: true,
+                password: bcrypt.hashSync(process.env.AGENT1_PASSWORD, 10),
+                role: "AGENT",
+            },
             {
                 name: process.env.AGENT2_NAME,
                 email: process.env.AGENT2_EMAIL,

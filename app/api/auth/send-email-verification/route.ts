@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/utils/prisma";
 import { ResponseType } from "@/lib/interfaces/ResponseType";
 import { sendEmailVerification } from "@/lib/email/sendEmailVerification";
+import generateVerificationCode from "@/lib/email/generateVerification";
 
 export async function PUT(
     req: Request
@@ -30,6 +31,32 @@ export async function PUT(
         });
     }
 
-    const result: ResponseType<null> = await sendEmailVerification(email);
+    if (user.isEmailVerified) {
+        return NextResponse.json({
+            success: false,
+            message: "Email is already verified",
+            data: null,
+        });
+    }
+
+    const code = generateVerificationCode();
+    const existingCode = await prisma.emailVerificationCode.findUnique({
+        where: { userId: user.id },
+    });
+    if (existingCode) {
+        await prisma.emailVerificationCode.update({
+            where: { userId: user.id },
+            data: { code },
+        });
+    } else {
+        await prisma.emailVerificationCode.create({
+            data: {
+                code,
+                userId: user.id,
+            },
+        });
+    }
+
+    const result: ResponseType<null> = await sendEmailVerification(email, code);
     return NextResponse.json(result);
 }

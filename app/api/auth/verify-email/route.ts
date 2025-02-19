@@ -1,23 +1,12 @@
 import { NextResponse } from "next/server";
 import prisma from "@/utils/prisma";
 import { ResponseType } from "@/lib/interfaces/ResponseType";
-import { getEmailFromToken } from "@/lib/email/getEmailFromToken";
 
-export async function GET(
-    req: Request,
-    { params }: { params: Promise<{ code: string }> }
+export async function PUT(
+    req: Request
 ): Promise<NextResponse<ResponseType<null>>> {
     try {
-        const { code: verificationCode } = await params;
-        const result = getEmailFromToken(verificationCode);
-        if (!result.success || !result.data) {
-            return NextResponse.json({
-                success: false,
-                message: result.message,
-                data: null,
-            });
-        }
-        const { email, code } = result.data;
+        const { email, code } = await req.json();
         if (!email || !code) {
             return NextResponse.json({
                 success: false,

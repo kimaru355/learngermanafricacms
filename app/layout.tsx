@@ -22,11 +22,11 @@ export default function RootLayout({
         <html lang="en" className={`${montserrat.variable}`}>
             <AuthProvider>
                 <body className="flex flex-col items-center bg-[#F1F0F3] w-full min-h-screen text-black">
-                    <main className="md:px-8 w-full max-w-[120rem]">
+                    <div className="md:px-8 w-full max-w-[120rem]">
                         <Navbar />
                         {children}
                         <Toaster />
-                    </main>
+                    </div>
                 </body>
             </AuthProvider>
         </html>
