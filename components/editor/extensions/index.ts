@@ -6,6 +6,7 @@ import { StarterKit } from "@tiptap/starter-kit";
 import Heading from "@tiptap/extension-heading";
 import Image from "@tiptap/extension-image";
 import { Indent } from "./indent";
+import { YouTube } from './youtube'
 
 export const extensions = [
     StarterKit.configure({
@@ -26,6 +27,7 @@ export const extensions = [
     Color,
     Image,
     Indent,
+    YouTube,
     TextAlign.configure({
         types: ["heading", "paragraph"],
     }),
