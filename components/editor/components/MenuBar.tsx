@@ -7,6 +7,7 @@ import { ListMenu } from "./menus/ListMenu";
 import { ImportWordMenu } from "./menus/ImportWordMenu";
 import { ImageMenu } from "./menus/ImageMenu";
 import { IndentMenu } from "./menus/IndentMenu";
+import { YouTubeMenu } from "./menus/YouTubeMenu";
 
 interface MenuBarProps {
     editor: Editor | null;
@@ -32,6 +33,8 @@ export const MenuBar: React.FC<MenuBarProps> = ({ editor }) => {
             <ImageMenu editor={editor} />
             <div className="bg-gray-200 mx-2 w-px h-6" /> {/* Separator */}
             <ImportWordMenu editor={editor} />
+            <div className="bg-gray-200 mx-2 w-px h-6" /> {/* Separator */}
+            <YouTubeMenu editor={editor} />
         </div>
     );
 };
