@@ -102,13 +102,13 @@ export default function ManageUsers() {
 
     const addUser = async () => {
         try {
-            if (!newUser || !newUser.name || !newUser.email) {
+            if (!newUser || !newUser.name || newUser.name.split(" ").length !== 2 || !newUser.email) {
                 toast({
                     title: "Invalid user details",
                     description: !newUser
-                        ? "name and email are required"
+                        ? "Full name and email are required"
                         : !newUser?.name
-                        ? "name is required"
+                        ? "Full name is required"
                         : "email is required.",
                     variant: "destructive",
                 });
