@@ -107,7 +107,7 @@ export default function ManageUsers() {
                     title: "Invalid user details",
                     description: !newUser
                         ? "Full name and email are required"
-                        : !newUser?.name
+                        : !newUser?.name || newUser.name.split(" ").length !== 2
                         ? "Full name is required"
                         : "email is required.",
                     variant: "destructive",
