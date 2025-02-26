@@ -48,13 +48,36 @@ export async function POST(
     try {
         const body = await req.json();
         const userRegister: UserRegister = body;
-        if (!userRegister || !userRegister.name || !userRegister.email) {
+        if (!userRegister || !userRegister.name || userRegister.name.split(" ").length !== 2 || !userRegister.email) {
             return NextResponse.json({
                 success: false,
-                message: "Invalid request. Bother name and email are required.",
+                message: "Invalid request. Both full name and email are required.",
                 data: null,
             });
         }
+        const existingUser = await prisma.user.findUnique({
+            where: { email: userRegister.email },
+        });
+        if (existingUser && existingUser.isDeleted) {
+            await prisma.user.update({
+                where: { email: userRegister.email },
+                data: { 
+                    name: userRegister.name,
+                    isDeleted: false },
+            });
+            return NextResponse.json({
+                success: true,
+                message: "User created successfully.",
+                data: null,
+            });
+            
+        } else if (existingUser) {
+            return NextResponse.json({
+                success: false,
+                message: "User already exists.",
+                data: null,
+            });
+        };
         const newUser = {
             email: userRegister.email,
             name: userRegister.name,
