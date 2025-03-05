@@ -1,6 +1,6 @@
 // IndentMenu.tsx
 import { Editor } from "@tiptap/react";
-import { ArrowRight, ArrowLeft } from "lucide-react"; // or use any icons you prefer
+import { IndentIncrease, IndentDecrease } from "lucide-react"; // or use any icons you prefer
 import { Button } from "../ui/Button";
 
 interface IndentMenuProps {
@@ -14,13 +14,13 @@ export const IndentMenu: React.FC<IndentMenuProps> = ({ editor }) => {
                 toolTip="Indent"
                 onClick={() => editor.chain().focus().indent().run()}
             >
-                <ArrowRight className="w-4 h-4" />
+                <IndentIncrease className="w-4 h-4" />
             </Button>
             <Button
                 toolTip="Outdent"
                 onClick={() => editor.chain().focus().outdent().run()}
             >
-                <ArrowLeft className="w-4 h-4" />
+                <IndentDecrease className="w-4 h-4" />
             </Button>
         </>
     );

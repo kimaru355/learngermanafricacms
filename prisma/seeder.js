@@ -156,6 +156,68 @@ const createNotes = async () => {
     }
 };
 
+const createNoteQuestion = async () => {
+    try {
+        const notes = await prisma.note.findMany();
+        const questionTypes = ["MULTIPLE_CHOICE", "SINGLE_CHOICE", "TRUE_FALSE", "FILL_IN_THE_BLANK"];
+        let questions = [];
+        notes.map(note => {
+            for (let i = 0; i < 3; i++) {
+                questions.push({
+                    question: faker.lorem.sentence(),
+                    questionType: questionTypes[i],
+                    number: i + 1,
+                    noteId: note.id,
+                });
+            }
+        });
+        await prisma.noteQuestion.createMany({
+            data: questions,
+        });
+        console.log("Questions Created successfully");
+    } catch (error) {
+        console.log("Error on note questions creation: ", error.message);
+    }
+}
+
+const createNoteQuestionOptions = async () => {
+    try {
+        let options = [];
+        const questions = await prisma.noteQuestion.findMany();
+        questions.map(question => {
+            if (question.questionType === "MULTIPLE_CHOICE") {
+                for (let i = 0; i < 4; i++) {
+                    options.push({
+                        option: faker.lorem.word(),
+                        isCorrect: i % 2 == 0 ? true : false,
+                        noteQuestionId: question.id,
+                    });
+                }
+            } else if (question.questionType === "SINGLE_CHOICE") {
+                for (let i = 0; i < 4; i++) {
+                    options.push({
+                        option: faker.lorem.word(),
+                        isCorrect: i == 3 ? true : false,
+                        noteQuestionId: question.id,
+                    })
+                }
+            } else if (question.questionType === "FILL_IN_THE_BLANK") {
+                options.push({
+                    option: faker.lorem.word(),
+                    isCorrect: true,
+                    noteQuestionId: question.id,
+                })
+            }
+        });
+        await prisma.noteQuestionOptions.createMany({
+            data: options,
+        });
+        console.log("Options Created successfully");
+    } catch (error) {
+        console.log("Error on note questions creation: ", error.message);
+    }
+}
+
 const deleteNotes = async () => {
     try {
         await prisma.note.deleteMany();
@@ -178,6 +240,8 @@ const runAll = async () => {
     await createLevels();
     await createTopics();
     await createNotes();
+    await createNoteQuestion();
+    await createNoteQuestionOptions();
     await createOwner();
     await createAdmin();
     await createAgents();

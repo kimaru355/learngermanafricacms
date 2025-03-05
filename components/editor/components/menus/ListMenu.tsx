@@ -1,6 +1,6 @@
 import { Editor } from "@tiptap/react";
 import { Button } from "../ui/Button";
-import { List, ListOrdered, Indent, Outdent } from "lucide-react";
+import { List, ListOrdered, ListTree, ListEnd } from "lucide-react";
 
 export const ListMenu: React.FC<{ editor: Editor }> = ({ editor }) => {
     return (
@@ -26,7 +26,7 @@ export const ListMenu: React.FC<{ editor: Editor }> = ({ editor }) => {
                 disabled={!editor.can().sinkListItem("listItem")}
                 toolTip="Nest list"
             >
-                <Indent className="w-4 h-4" />
+                <ListTree className="w-4 h-4" />
             </Button>
             <Button
                 onClick={() =>
@@ -35,7 +35,7 @@ export const ListMenu: React.FC<{ editor: Editor }> = ({ editor }) => {
                 disabled={!editor.can().liftListItem("listItem")}
                 toolTip="Unnest list"
             >
-                <Outdent className="w-4 h-4" />
+                <ListEnd className="w-4 h-4" />
             </Button>
         </div>
     );
