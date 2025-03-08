@@ -96,20 +96,20 @@ model Note {
 }
 
 model NoteQuestion {
-  id           String                @id @default(cuid())
+  id           String               @id @default(cuid())
   question     String
   questionType QuestionType
   number       Int
   noteId       String
-  createdAt    DateTime              @default(now())
-  updatedAt    DateTime              @updatedAt
-  note         Note                  @relation(fields: [noteId], references: [id])
-  options      NoteQuestionOptions[]
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+  note         Note                 @relation(fields: [noteId], references: [id])
+  options      NoteQuestionOption[]
 
   @@unique([noteId, number])
 }
 
-model NoteQuestionOptions {
+model NoteQuestionOption {
   id             String       @id @default(cuid())
   option         String
   isCorrect      Boolean
