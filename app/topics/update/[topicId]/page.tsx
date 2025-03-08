@@ -161,11 +161,11 @@ export default function Page() {
     }, [topicId]);
 
     return (
-        <section>
+        <main>
             <div className="bg-linear-to-r from-deep-blue-gradient-start to-deep-blue-gradient-end -mt-4 md:-mt-16 pt-8 md:pt-20 pb-10 md:rounded-4xl text-white">
                 <div className="mx-auto px-4 md:px-12">
                     <div className="flex items-center gap-4 mb-6">
-                        <h1 className="font-bold text-4xl text-white">
+                        <h1 className="font-bold text-white text-4xl">
                             {level?.name}
                         </h1>
                         <p className="bg-[rgba(167,126,250,0.16)] px-4 py-1 rounded-4xl">
@@ -242,7 +242,7 @@ export default function Page() {
                                     onClick={() => {
                                         open();
                                     }}
-                                    className="right-8 bottom-8 absolute flex justify-center items-center bg-white hover:bg-[#0078ff] shadow-2xl rounded-full hover:cursor-pointer size-16"
+                                    className="right-8 bottom-8 absolute flex justify-center items-center bg-white hover:bg-[#0078ff] shadow-2xl rounded-full size-16 hover:cursor-pointer"
                                 >
                                     <Image
                                         src="/icons/edit-pencil.svg"
@@ -269,6 +269,6 @@ export default function Page() {
             <div className="my-8">
                 <Notes topicId={topicId} topic={oldTopic} level={level} />
             </div>
-        </section>
+        </main>
     );
 }

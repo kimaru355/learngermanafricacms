@@ -5,7 +5,7 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { handlePrismaError } from "@/lib/handlePrismaError";
 import { NoteQuestionDB } from "@/lib/interfaces/noteQuestionDB";
 
-export async function GET (req: NextRequest, {params}: {params: {noteId: string}}): Promise<NextResponse<ResponseType<NoteQuestionDB[] | null>>> {
+export async function GET (req: NextRequest, {params}: {params: Promise<{noteId: string}>}): Promise<NextResponse<ResponseType<NoteQuestionDB[] | null>>> {
     try {
         const { noteId } = await params;
         const noteQuestions = await prisma.noteQuestion.findMany({

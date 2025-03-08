@@ -19,128 +19,71 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useEffect, useState } from "react";
-import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
-import Link from "next/link";
-import { NoteService } from "@/services/noteService";
-import { Note } from "@/lib/interfaces/note";
-import { Topic } from "@/lib/interfaces/topic";
-import { Level } from "@/lib/interfaces/levels";
-import { Button } from "../ui/button";
-import { NewNote } from "@/lib/interfaces/newNote";
+import { useToast } from "@/hooks/use-toast";
+import { NoteQuestionService } from "@/services/noteQuestionService";
+import { useEffect, useState } from "react";
+import { NoteQuestion } from "@/lib/interfaces/noteQuestion";
+import CreateQuestion from "./Question";
 
-export default function Notes({
-    topicId,
-    topic,
-    level,
-}: {
-    topicId: string;
-    topic: Topic | null;
-    level: Level | null;
-}) {
-    const [notes, setNotes] = useState<Note[]>([]);
+export default function Questions({ noteId }: {noteId: string}) {
     const { toast } = useToast();
-
-    const createNote = async () => {
-        try {
-            const noteService = new NoteService();
-            const newNote: NewNote = {
-                topicId,
-                content: {},
-                number: notes.length + 1,
-            }
-            const result = await noteService.createNote(newNote);
-            if (!result.success) {
-                toast({
-                    title: "Error deleting note",
-                    description: result.message,
-                    variant: "destructive",
-                });
-                return;
-            }
-            toast({
-                title: "note deleted successfully",
-                variant: "success",
-            });
-            window.location.reload();
-        } catch {
-            toast({
-                title: "Error deleting note",
-                variant: "destructive",
-            });
-        }
-    };
-
-    const deleteNote = async (noteId: string) => {
-        if (!noteId) {
-            toast({
-                title: "Error deleting note",
-                description: "Invalid note id",
-                variant: "destructive",
-            });
-        }
-        try {
-            const noteService = new NoteService();
-            const result = await noteService.deleteNoteById(noteId);
-            if (!result.success) {
-                toast({
-                    title: "Error deleting note",
-                    description: result.message,
-                    variant: "destructive",
-                });
-                return;
-            }
-            toast({
-                title: "note deleted successfully",
-                variant: "success",
-            });
-            window.location.reload();
-        } catch {
-            toast({
-                title: "Error deleting note",
-                variant: "destructive",
-            });
-        }
-    };
+    const [questions, setQuestions] = useState<NoteQuestion[]>([]);
 
     useEffect(() => {
-        const fetchNotes = async () => {
-            try {
-                const noteService = new NoteService();
-                const result = await noteService.getNotesByTopicId(topicId);
-                if (!result.success || !result.data) {
-                    toast({
-                        title: "Error fetching notes",
-                        description: result.message,
-                        variant: "destructive",
-                    });
-                    return;
-                }
-                setNotes(result.data);
-            } catch {
-                return <div>An Error Occurred</div>;
+        const fetchQuestions = async () => {
+            const noteQuestionService = new NoteQuestionService();
+            const result = await noteQuestionService.getNoteQuestionByNoteId(noteId);
+            if (!result.success || !result.data) {
+                toast({
+                    title: "Error fetching question",
+                    variant: "destructive",
+                });
+                return;
             }
-        };
-        fetchNotes();
-    }, []);
+            setQuestions(result.data);
+        
+        }
+        fetchQuestions();
+    }, [noteId]);
+
+    const deleteQuestion = async (id: string) => {
+        try {
+            const questionService = new NoteQuestionService();
+            const result = await questionService.deleteNoteQuestion(id);
+            if (!result.success) {
+                toast({
+                    title: "Error deleting question",
+                    variant: "destructive",
+                });
+                return;
+            }
+            setQuestions(questions.filter((question) => question.id !== id));
+            toast({
+                title: "Question deleted successfully",
+                variant: "success",
+            });
+
+        } catch {
+            toast({
+                title: "Error deleting question",
+                variant: "destructive",
+            });
+        }
+    }
 
     return (
+        
         <section className="bg-white p-2 lg:p-8 w-full min-h-80">
             <div className="flex justify-between my-4 w-full text-lg">
-                <h2 className="font-semibold text-2xl md:text-3xl">Notes</h2>
-                <Button
-                    className="bg-black px-4 py-2 rounded-xl text-white text-center"
-                    onClick={createNote}
-                >
-                    + Add Note
-                </Button>
+                <h2 className="font-semibold text-2xl md:text-3xl">Questions</h2>
+                <CreateQuestion noteId={noteId} oldQuestion={null} number={questions.length + 1} />
             </div>
             <Table className="w-full">
                 <TableHeader className="bg-[rgba(167,126,250,0.1)]">
                     <TableRow>
-                        <TableHead>Level</TableHead>
-                        <TableHead>Topic</TableHead>
+                        <TableHead>Question</TableHead>
+                        <TableHead>Question Type</TableHead>
                         <TableHead>Number</TableHead>
                         <TableHead>Created At</TableHead>
                         <TableHead>Updated At</TableHead>
@@ -148,36 +91,31 @@ export default function Notes({
                     </TableRow>
                 </TableHeader>
                 <TableBody className="bg-white">
-                    {notes.map((note) => (
-                        <TableRow key={note.id}>
-                            <TableCell className="text-lg md:text-xl">
-                                {level?.name}
+                    {questions.map((question) => (
+                        <TableRow key={question.id}>
+                            <TableCell className="max-w-xs text-lg md:text-xl truncate" title={question.question}>
+                                {question.question.length > 50 ? `${question.question.substring(0, 50)}...` : question.question}
                             </TableCell>
                             <TableCell className="text-lg md:text-xl">
-                                {topic?.name}
+                                {question.questionType}
                             </TableCell>
                             <TableCell className="text-lg md:text-xl">
-                                {note.number}
+                                {question.number}
                             </TableCell>
                             <TableCell className="md:text-lg">
                                 {format(
-                                    new Date(note.createdAt),
+                                    new Date(question.createdAt),
                                     "do MMM yyyy"
                                 )}
                             </TableCell>
                             <TableCell className="md:text-lg">
                                 {format(
-                                    new Date(note.updatedAt),
+                                    new Date(question.updatedAt),
                                     "do MMM yyyy"
                                 )}
                             </TableCell>
                             <TableCell className="flex justify-center space-x-2 md:text-lg">
-                                <Link
-                                    href={`/notes/update/${note.id}`}
-                                    className="bg-white py-1 border border-[#000412] rounded-xl w-24 text-[#000412] text-center"
-                                >
-                                    View
-                                </Link>
+                                <CreateQuestion noteId={noteId} oldQuestion={question} number={question.number} />
                                 <AlertDialog>
                                     <AlertDialogTrigger asChild>
                                         <button className="bg-white py-1 border border-[#FF3C5F] rounded-xl w-24 text-[#FF3C5F]">
@@ -191,8 +129,8 @@ export default function Notes({
                                             </AlertDialogTitle>
                                             <AlertDialogDescription>
                                                 This action cannot be undone.
-                                                This will permanently delete
-                                                this note and cannot be
+                                                This will <span className="text-red-400">permanently</span> delete
+                                                this question and <span className="text-red-400">ALL</span> of its <span className="text-red-400">OPTIONS AND ANSWERS</span> and cannot be
                                                 recovered.
                                             </AlertDialogDescription>
                                         </AlertDialogHeader>
@@ -203,7 +141,7 @@ export default function Notes({
                                             <AlertDialogAction
                                                 className="bg-red-400 hover:bg-red-600 text-white hover:cursor-pointer"
                                                 onClick={() => {
-                                                    deleteNote(note.id);
+                                                    deleteQuestion(question.id);
                                                 }}
                                             >
                                                 Continue
@@ -217,5 +155,5 @@ export default function Notes({
                 </TableBody>
             </Table>
         </section>
-    );
+    )
 }
