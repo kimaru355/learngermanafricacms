@@ -8,6 +8,26 @@ export async function PUT (req: Request, {params}: {params: Promise<{id: string}
     try {
         const { id } = await params;
         const { question, questionType, number } = await req.json();
+        const prevQuestion = await prisma.noteQuestion.findUnique({
+            where: {
+                id,
+            }
+        });
+        if (!prevQuestion) {
+            return NextResponse.json({
+                success: false,
+                message: "Note question not found.",
+                data: null,
+            });
+        }
+        // delete all question options if the question type has changed
+        if (prevQuestion.questionType !== questionType) {
+            await prisma.noteQuestionOption.deleteMany({
+                where: {
+                    noteQuestionId: id,
+                },
+            });
+        }
         await prisma.noteQuestion.update({
             where: {
                 id,
@@ -39,7 +59,7 @@ export async function PUT (req: Request, {params}: {params: Promise<{id: string}
 export async function DELETE (req: Request, {params}: {params: Promise<{id: string}>}): Promise<NextResponse<ResponseType<null>>> {
     try {
         const { id } = await params;
-        await prisma.noteQuestionOptions.deleteMany({
+        await prisma.noteQuestionOption.deleteMany({
             where: {
                 noteQuestionId: id,
             },

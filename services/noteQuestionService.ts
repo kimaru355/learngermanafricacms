@@ -6,7 +6,7 @@ import { NoteQuestionServices } from "@/lib/interfaces/services/noteQuestion";
 export class NoteQuestionService implements NoteQuestionServices {
     async getNoteQuestions(): Promise<ResponseType<NoteQuestion[] | null>> {
         try {
-            const response = await fetch("/api/note-question");
+            const response = await fetch("/api/note-questions");
             if (!response.ok) {
                 return {
                     success: false,
@@ -24,7 +24,7 @@ export class NoteQuestionService implements NoteQuestionServices {
 
     async getNoteQuestionByNoteId(noteId: string): Promise<ResponseType<NoteQuestion[] | null>> {
         try {
-            const response = await fetch(`/api/note-question/note/${noteId}`);
+            const response = await fetch(`/api/note-questions/note/${noteId}`);
             if (!response.ok) {
                 return {
                     success: false,
@@ -41,7 +41,7 @@ export class NoteQuestionService implements NoteQuestionServices {
 
     async createNoteQuestion(newNoteQuestion: NewNoteQuestion): Promise<ResponseType<null>> {
         try {
-            const response = await fetch("/api/note-question", {
+            const response = await fetch("/api/note-questions", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -64,7 +64,7 @@ export class NoteQuestionService implements NoteQuestionServices {
 
     async updateNoteQuestion(noteQuestion: NoteQuestion): Promise<ResponseType<null>> {
         try {
-            const response = await fetch(`/api/note-question/question/${noteQuestion.id}`, {
+            const response = await fetch(`/api/note-questions/question/${noteQuestion.id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -87,7 +87,7 @@ export class NoteQuestionService implements NoteQuestionServices {
 
     async deleteNoteQuestion(id: string): Promise<ResponseType<null>> {
         try {
-            const response = await fetch(`/api/note-question/question/${id}`, {
+            const response = await fetch(`/api/note-questions/question/${id}`, {
                 method: "DELETE"
             });
             const result = await response.json();

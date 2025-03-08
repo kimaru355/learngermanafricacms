@@ -26,6 +26,7 @@ import { NoteQuestionService } from "@/services/noteQuestionService";
 import { QuestionType } from "@/lib/interfaces/questionType";
 import { NewNoteQuestion } from "@/lib/interfaces/newNoteQuestion";
 import { cn } from "@/lib/utils";
+import QuestionOptions from "./QuestionOptions";
 
 export default function CreateQuestion({
     noteId,
@@ -41,7 +42,7 @@ export default function CreateQuestion({
         noteId: noteId,
         question: oldQuestion?.question || "",
         questionType: oldQuestion?.questionType || QuestionType.SINGLE_CHOICE,
-        number: number,
+        number: oldQuestion?.number || number,
     });
     const { toast } = useToast();
 
@@ -89,9 +90,10 @@ export default function CreateQuestion({
                     : "Question updated successfully",
                 variant: "success",
         });
+        setOpen(false);
         setTimeout(() => {
             window.location.reload();
-        }, 3000);
+        }, 2000);
     };
 
     useEffect(() => {
@@ -144,7 +146,7 @@ export default function CreateQuestion({
                     }}
                 />
 
-                <Label className="text-gray-500 md:text-lg">Question Type</Label>
+                <Label className="text-gray-500 md:text-lg">Question Type <span className="text-red-400">(*Please note that changing the question type will delete all existing question options)</span></Label>
                 <Select
                     onValueChange={(value) => {
                         setNewQuestion((prevQuestion) => {
@@ -192,6 +194,22 @@ export default function CreateQuestion({
                 <DialogFooter>
                     <Button onClick={saveQuestion}>Save changes</Button>
                 </DialogFooter> 
+
+                <div>
+                    { oldQuestion?.questionType === QuestionType.TRUE_FALSE && newQuestion.questionType !== QuestionType.TRUE_FALSE ? (
+                        <div>
+                            <p>Please save the question first to add options...</p>
+                        </div>
+                    ) : newQuestion.questionType === QuestionType.TRUE_FALSE ? (
+                        <div>
+                            <p>You cannot add question options in True False questions...</p>
+                        </div>
+                    ) : oldQuestion ? <QuestionOptions questionId={oldQuestion.id} setOpen={setOpen} /> : (
+                        <div>
+                            <p>Please save the question to add options...</p>
+                        </div>
+                    ) }
+                </div>
             </DialogContent>
         </Dialog>
     );
