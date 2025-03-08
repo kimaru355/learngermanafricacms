@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { RichTextEditor } from "@/components/editor/RichTextEditor";
 import CreateNote from "@/components/notes/createNote";
+import Questions from "@/components/notes/Questions";
 
 export default function Page() {
     const { id } = useParams() as { id: string };
@@ -52,11 +53,11 @@ export default function Page() {
     }, []);
 
     return (
-        <section>
+        <main className="w-full">
             <div className="bg-linear-to-r from-deep-blue-gradient-start to-deep-blue-gradient-end -mt-4 md:-mt-16 pt-8 md:pt-20 pb-10 md:rounded-4xl text-white">
                 <div className="mx-auto px-4 md:px-12">
                     <div className="flex items-center gap-4 mb-6">
-                        <h1 className="font-bold text-4xl text-white">
+                        <h1 className="font-bold text-white text-4xl">
                             {oldNote?.topic.level.name}
                         </h1>
                         <p className="bg-[rgba(167,126,250,0.16)] px-4 py-1 rounded-4xl">
@@ -92,6 +93,7 @@ export default function Page() {
                 </div>
             </div>
             <div>{oldNote && <RichTextEditor oldNote={oldNote} />}</div>
-        </section>
+            <div>{oldNote && <Questions noteId={id} />}</div>
+        </main>
     );
 }

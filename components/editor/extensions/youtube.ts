@@ -41,7 +41,7 @@ export const YouTube = Node.create({
         return [
             "iframe",
             mergeAttributes(HTMLAttributes, {
-                class: "w-full aspect-video",
+                class: "w-full max-w-[40rem] mx-10 aspect-video",
                 frameborder: "0",
                 allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
                 allowfullscreen: "true",

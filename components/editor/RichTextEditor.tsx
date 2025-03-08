@@ -66,7 +66,7 @@ export const RichTextEditor = ({ oldNote }: { oldNote: NoteTopic }) => {
     };
 
     return (
-        <div className="flex lg:flex-row flex-col gap-4 m-2 w-full">
+        <section className="flex lg:flex-row flex-col gap-4 m-2 w-full">
             <div className="mx-auto my-8 w-full lg:w-1/2 max-w-4xl">
                 <MenuBar editor={editor} />
                 <Content editor={editor} />
@@ -81,9 +81,9 @@ export const RichTextEditor = ({ oldNote }: { oldNote: NoteTopic }) => {
                     </Button>
                 </div>
             </div>
-            <div className="w-full lg:w-1/2">
+            <div className="w-full lg:w-1/2 max-w-full">
                 <Preview content={editor?.getHTML() || ""} />
             </div>
-        </div>
+        </section>
     );
 };

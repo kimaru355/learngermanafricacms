@@ -65,7 +65,6 @@ export default function VerifyEmail() {
         if (!code || !email) {
             return;
         }
-        console.log("Verifying email");
         const authService = new AuthService();
         const result: ResponseType<null> = await authService.verifyEmail(
             email,

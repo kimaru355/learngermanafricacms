@@ -22,6 +22,13 @@ enum GermanLevel {
   C2
 }
 
+enum QuestionType {
+  MULTIPLE_CHOICE
+  SINGLE_CHOICE
+  TRUE_FALSE
+  FILL_IN_THE_BLANK
+}
+
 model User {
   id                    String                 @id @default(cuid())
   email                 String                 @unique
@@ -40,6 +47,15 @@ model User {
   createdAt             DateTime               @default(now())
   updatedAt             DateTime               @updatedAt
   emailVerificationCode EmailVerificationCode?
+}
+
+model EmailVerificationCode {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  code      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model Level {
@@ -67,22 +83,48 @@ model Topic {
 }
 
 model Note {
-  id        String   @id @default(cuid())
+  id        String         @id @default(cuid())
   content   Json
   number    Int
   topicId   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  topic     Topic    @relation(fields: [topicId], references: [id])
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  topic     Topic          @relation(fields: [topicId], references: [id])
+  questions NoteQuestion[]
 
   @@unique([topicId, number])
 }
 
-model EmailVerificationCode {
-  id        String   @id @default(cuid())
-  userId    String   @unique
-  code      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id])
+model NoteQuestion {
+  id           String                @id @default(cuid())
+  question     String
+  questionType QuestionType
+  number       Int
+  noteId       String
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+  note         Note                  @relation(fields: [noteId], references: [id])
+  options      NoteQuestionOptions[]
+
+  @@unique([noteId, number])
+}
+
+model NoteQuestionOptions {
+  id             String       @id @default(cuid())
+  option         String
+  isCorrect      Boolean
+  noteQuestionId String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  noteQuestion   NoteQuestion @relation(fields: [noteQuestionId], references: [id])
+}
+
+model DeletedNote {
+  id        String      @id @default(cuid())
+  content   Json
+  number    Int
+  topicName String
+  levelName GermanLevel
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
 }
